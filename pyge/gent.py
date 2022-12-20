@@ -80,7 +80,7 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
     return gauss/(4*np.pi)
 
 # TODO: c'e' un modo per velocizzare questo loop?
-def ge_loops(contact_map, bead_position, m0, backend='numpy'):
+def ge_loops(contact_map, bead_position, m0, backend='cython'):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain
 
