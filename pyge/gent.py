@@ -79,7 +79,6 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
 
     return gauss/(4*np.pi)
 
-# TODO: c'e' un modo per velocizzare questo loop?
 def ge_loops(contact_map, bead_position, m0, backend='cython'):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain
@@ -121,7 +120,6 @@ def ge_loops(contact_map, bead_position, m0, backend='cython'):
     bonds = _bond_vectors(bead_position)
 
     result = []
-    # TODO: parallelize this loop
     for loop in loops:
         # loop extrema
         i1 = loop[0]
@@ -179,9 +177,9 @@ def ge_configuration(ge_list_complete, m0, mode='max'):
         # Maximum
         fun_selection = max
         params = {"key": abs}
-    elif mode == mode_allowed[1]:
+    elif mode == mode_allowed[1] or mode == mode_allowed[2]:
         # Average
-        fun_selection = np.mean
+        fun_selection = np.average
         params = {}
         # there is no loop or thread associated to the average value
         loop, thread = None, None
@@ -193,6 +191,15 @@ def ge_configuration(ge_list_complete, m0, mode='max'):
         return None
 
     ge_values = [ge[2] for ge in ge_loop_filtered]
+
+    if mode == mode_allowed[2]:
+        # weight the average of GE using the absolute values of GE
+        ge_values_abs = np.abs(ge_values)
+        sorting_indices = np.argsort(ge_values_abs)
+        cumsum = np.cumsum(ge_values_abs[sorting_indices])
+        ge_values = np.array(ge_values)[sorting_indices]
+        params = {"weights": cumsum/cumsum.sum()}
+
     ge_selected = fun_selection(ge_values, **params)
 
     if mode == mode_allowed[0]:

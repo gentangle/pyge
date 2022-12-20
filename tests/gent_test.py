@@ -20,7 +20,6 @@ cm_1ucs = np.load(
 u_pdb = mda.Universe(str(parent / "data/1ucs.pdb"))
 ca_positions = u_pdb.select_atoms('name CA').positions
 
-
 def test_gaussian_entanglement():
     """
     Testing the gaussian entanglement calculation for all possible loops
@@ -38,7 +37,7 @@ def test_ge_configuration():
     Test the possible selections for the GE of the whole configuration
     """
     ge_loops_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend='cython')
-    modes = ("max", "average")
+    modes = ("max", "average", "weighted")
 
     for mode in modes:
         ge_selected = gent.ge_configuration(ge_loops_computed, 10, mode)
@@ -48,3 +47,6 @@ def test_ge_configuration():
             assert ge_selected[0][1] == ge_1ucs_native_modes["max_loop"][1]
             assert ge_selected[1][0] == ge_1ucs_native_modes["max_thr"][0]
             assert ge_selected[1][1] == ge_1ucs_native_modes["max_thr"][1]
+
+# if __name__ == "__main__":
+#     test_gaussian_entanglement()
