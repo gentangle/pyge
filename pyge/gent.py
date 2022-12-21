@@ -197,8 +197,14 @@ def ge_configuration(ge_list_complete, m0, mode='max'):
         ge_values_abs = np.abs(ge_values)
         sorting_indices = np.argsort(ge_values_abs)
         cumsum = np.cumsum(ge_values_abs[sorting_indices])
+        cumsum_sum = cumsum.sum()
+        if cumsum_sum == 0:
+            # case in which a low number of loops return all
+            # G' equal to 0
+            params = {}
+        else:
+            params = {"weights": cumsum/cumsum_sum}
         ge_values = np.array(ge_values)[sorting_indices]
-        params = {"weights": cumsum/cumsum.sum()}
 
     ge_selected = fun_selection(ge_values, **params)
 
