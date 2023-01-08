@@ -79,7 +79,7 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
 
     return gauss/(4*np.pi)
 
-def ge_loops(contact_map, bead_position, m0, backend='cython'):
+def ge_loops(contact_map, bead_position, min_thr_len, backend='cython'):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain
 
@@ -90,11 +90,14 @@ def ge_loops(contact_map, bead_position, m0, backend='cython'):
         contact_map : array_like
             2D numpy array: list of the 3 dimensional position for
             each C_alpha (or residue in coarse-grained fashion)
-        m0 : int
-            minimum length for a thread
+        min_thr_len : int
+            Let i and j be indexes for the thread;
+            Then this argument set the condition:
+                |j-i| =>  min_thr_len
         backend : str
             Specifies the backend for the GE calculation.
-            Possible values: 'numpy', 'cython'
+            Possible values: 'numpy', 'cython'.
+            By default, 'cython'
 
     Returns
     -------
@@ -129,18 +132,18 @@ def ge_loops(contact_map, bead_position, m0, backend='cython'):
         j1_max = 0
         j2_max = 0
         # search before the loop
-        for j1 in range(i1-m0):
-            for increment in range(i1 - m0 - j1):
-                j2 = j1 + m0 + increment
+        for j1 in range(i1-min_thr_len):
+            for increment in range(i1 - min_thr_len - j1):
+                j2 = j1 + min_thr_len + increment
                 GE_loop = ge_func(i1,i2, j1,j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max):
                     GE_max = GE_loop
                     j1_max = j1
                     j2_max = j2
         # search after the loop
-        for j1 in range(i2 + 1, len_chain_1 - m0):
-            for increment in range(len_chain_1 - m0 - j1):
-                j2 = j1 + m0 + increment
+        for j1 in range(i2 + 1, len_chain_1 - min_thr_len):
+            for increment in range(len_chain_1 - min_thr_len - j1):
+                j2 = j1 + min_thr_len + increment
                 GE_loop = ge_func(i1,i2, j1,j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max):
                     GE_max = GE_loop
@@ -151,7 +154,7 @@ def ge_loops(contact_map, bead_position, m0, backend='cython'):
 
     return result
 
-def ge_configuration(ge_list_complete, m0, mode='max'):
+def ge_configuration(ge_list_complete, min_loop_len, mode='max'):
     """
     Returns the GE of a chain and the corresponding loop-thread.
     The user can chose the mode use to select the Gaussian Entanglement
@@ -162,10 +165,14 @@ def ge_configuration(ge_list_complete, m0, mode='max'):
         ge_list_complete : see output ge_loops
             List of n by 3 elements with information about loops, threads and
             G' values
-        m0 : int
-            minimum length for a loop
+        min_loop_len : int
+            Let i and j be indexes for the thread;
+            Then this argument set the condition:
+                |j-i| =>  min_loop_len
         mode : str
-            how to select the G' for the whole configuration
+            how to select the G' for the whole configuration.
+            The possible ones are: 'max', 'average' or 'weighted'
+            By default, 'max'
 
     Returns:
         out : Tuple[Tuple[int,int], Tuple[int,int], float]
@@ -177,7 +184,7 @@ def ge_configuration(ge_list_complete, m0, mode='max'):
         # Maximum
         fun_selection = max
         params = {"key": abs}
-    elif mode == mode_allowed[1] or mode == mode_allowed[2]:
+    elif mode in (mode_allowed[1], mode_allowed[2]):
         # Average
         fun_selection = np.average
         params = {}
@@ -186,7 +193,7 @@ def ge_configuration(ge_list_complete, m0, mode='max'):
     else:
         raise ValueError(f"Mode {mode} not valid, use one of the following: {mode_allowed}")
 
-    ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= m0]
+    ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= min_loop_len]
     if len(ge_loop_filtered) == 0:
         return None
 

@@ -1,0 +1,16 @@
+# Results computed by A. Trovato on 2022/12/21
+# HEADER INFO hill_coeff threshold
+# dot is specified with the char 'p'
+# HEADER {pdbID}{chainID}{domainID} n_contacts GE_max fraction_of_entangled_contacts ? 
+# INFO 1p0_0p70
+1ucsA00 128 -1.031000 -0.187636 -0.0856394
+# INFO 1p5_0p70
+1ucsA00 128 -1.031000 -0.181225 -0.0706148
+# INFO 2p0_0p70
+1ucsA00 128 -1.031000 -0.176846 -0.0691525
+# INFO 2p5_0p70
+1ucsA00 128 -1.031000 -0.17474 -0.0734052
+# INFO 3p0_0p70
+1ucsA00 128 -1.031000 -0.174631 -0.0797631
+# INFO 4p0_0p70
+1ucsA00 128 -1.031000 -0.178456 -0.0936722
