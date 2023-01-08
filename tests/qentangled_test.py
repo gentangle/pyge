@@ -7,6 +7,7 @@ import pytest
 import numpy as np
 
 from pyge.qentangled import hill_fun
+from pyge.qentangled import qentangled
 
 @pytest.mark.parametrize("imp, thr, hill_coeff", [
     (0.001, 0.5, 2),
@@ -26,15 +27,38 @@ def test_hill_fun_right_extrema(imp, thr, hill_coeff):
     """Test extrema: result should tend to 1"""
     assert hill_fun(imp, thr, hill_coeff) > 0.95
 
-def test_qentangled():
-    """Results should be consistent with independent calculations"""
+@pytest.mark.parametrize("hill_coeff, comparison", [
+    (1.0, -0.187636),
+    (1.5, -0.181225),
+    (2.0, -0.176846),
+    (2.5, -0.17474),
+    (3.0, -0.174631),
+    (4.0, -0.178456)
+])
+def test_qentangled(hill_coeff, comparison):
+    """Results should be consistent with independent calculations for 1UCS"""
     parent = pathlib.Path(__file__).parent.resolve()
 
     ge_1ucs_native = np.load(
         parent / "data/GE_1ucs_native.npy",
         allow_pickle=True)
 
+    # count contacts with loops and threads |j-i|>9
+    n_contacts = len(
+        [g for g in ge_1ucs_native if (g[0][1]-g[0][0]>9) and (g[1][1]-g[1][0] > 9)]
+    )
 
-# 1 riprodurre condizione dei file di antonio, ovvero modificare la lista di contatti
-# per 1ucs e qualche altra proteina
-# 2. calcolo con la mia funzinoe e asser
+    assert n_contacts == 128
+
+    res = qentangled(
+        ge_1ucs_native,
+        n_contacts,
+        min_loop_len=10,
+        min_thr_len=10,
+        activation_params={
+            "threshold": 0.7,
+            "hill_coeff": hill_coeff
+        }
+    )
+
+    assert np.isclose(res, comparison, atol=5e-5)
