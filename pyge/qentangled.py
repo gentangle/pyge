@@ -30,7 +30,15 @@ def hill_fun(inp, threshold, hill_coeff) -> np.ndarray:
     np.ndarray
         hill function for the parameters provided
     """
-    return 1/( 1 + (threshold/inp)**hill_coeff )
+    # use numpy array even if a single float is provided for a correct
+    # handle of 0 (because we divide for 0 even thought he function tends to 0
+    # for inp going to 0)
+    inp = np.asarray(inp)
+    out = 1/( 1 + (threshold/inp)**hill_coeff )
+    # check fo NaN
+    if np.isnan(np.sum(out)):
+        raise RuntimeError("NaNs are detected as output fo the Hill function")
+    return out
 
 def qentangled(contact_thr_ge_list, n_contacts, min_loop_len=0, min_thr_len=0, activation_fun=hill_fun, activation_params=None) -> float:
     r"""
