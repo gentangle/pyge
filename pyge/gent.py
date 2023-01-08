@@ -154,7 +154,7 @@ def ge_loops(contact_map, bead_position, min_thr_len, backend='cython'):
 
     return result
 
-def ge_configuration(ge_list_complete, min_loop_len, mode='max'):
+def ge_configuration(ge_list_complete, min_loop_len, mode='max', **kwards):
     """
     Returns the GE of a chain and the corresponding loop-thread.
     The user can chose the mode use to select the Gaussian Entanglement
@@ -173,6 +173,9 @@ def ge_configuration(ge_list_complete, min_loop_len, mode='max'):
             how to select the G' for the whole configuration.
             The possible ones are: 'max', 'average' or 'weighted'
             By default, 'max'
+        kwargs:
+            exponent : int
+                exponent to which the absolute value of G' is elevated
 
     Returns:
         out : Tuple[Tuple[int,int], Tuple[int,int], float]
@@ -200,8 +203,10 @@ def ge_configuration(ge_list_complete, min_loop_len, mode='max'):
     ge_values = [ge[2] for ge in ge_loop_filtered]
 
     if mode == mode_allowed[2]:
+        # get exponent if present, otherwise set it to 1
+        exponent = kwards.get("exponent", 1)
         # weight the average of GE using the absolute values of GE
-        ge_values_abs = np.abs(ge_values)
+        ge_values_abs = np.abs(ge_values)**exponent
         sorting_indices = np.argsort(ge_values_abs)
         cumsum = np.cumsum(ge_values_abs[sorting_indices])
         cumsum_sum = cumsum.sum()
