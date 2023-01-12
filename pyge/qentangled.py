@@ -11,7 +11,9 @@ about the respective thread and G' value. This list is the one
 produced by gent.ge_loops
 """
 import numpy as np
+from numba import njit
 
+@njit
 def hill_fun(inp, threshold, hill_coeff) -> np.ndarray:
     """
     Hill function
