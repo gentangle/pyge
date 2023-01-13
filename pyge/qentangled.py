@@ -40,7 +40,7 @@ def hill_fun(inp, threshold, hill_coeff) -> np.ndarray:
         raise RuntimeError("NaNs are detected as output fo the Hill function")
     return out
 
-def qentangled(contact_thr_ge_list, n_contacts, min_loop_len=0, min_thr_len=0, activation_fun=hill_fun, activation_params=None) -> float:
+def qentangled(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=hill_fun, activation_params=None) -> float:
     r"""
     Compute the fraction of entangled contacts defined as:
         \frac{1}{N} \sum_{formed contacts} \sgn (G') f( |G'| )
@@ -49,8 +49,6 @@ def qentangled(contact_thr_ge_list, n_contacts, min_loop_len=0, min_thr_len=0, a
     ----------
     contact_thr_ge_list : see gent.ge_loops
         List of loops, relative thread and G' value
-    n_contacts : int
-        total number of contacts
     min_loop_len : int, optional
         Minimal number of residues to identify a chain segment as a loop
         loop_end - loop_start >= min_loop_len
@@ -84,4 +82,4 @@ def qentangled(contact_thr_ge_list, n_contacts, min_loop_len=0, min_thr_len=0, a
     # activation function would be 0 (and it is test to be in this way)
     # Moreover, the activation function takes as input the abs of G'
     integrand = np.sign(ge_array)*activation_fun(np.abs(ge_array), **activation_params)
-    return integrand.sum()/n_contacts
+    return np.average(integrand)
