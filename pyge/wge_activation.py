@@ -13,7 +13,7 @@ def wge(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=None,
     evaluated on |G'|.
     Definition:
         \sum_{i,j \in C} G^\prime (i,j) \frac{f(|G^\prime| | G_0, w)}{\sum_{i,j \in C} f(|G^\prime| | G_0, w)}
-    where C is the set of formed native contacts 
+    where C is the set of formed native contacts
 
     The goal is to weight more higher values of GE
 
