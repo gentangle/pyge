@@ -1,23 +1,21 @@
 """
-Functions to compute the fraction of entangled contacts
-
-The module implement the function to compute the fraction of
-entangled contacts and this value from a timeseries.
-Differently from trajectory and gent, here the functions takes
-as input the list produced by gent.ge_loops
-
-The function takes as argument the list of contacts together with info
-about the respective thread and G' value. This list is the one
-produced by gent.ge_loops
+Module to compute weighted average of GE
+where weights are given by an Hill activation function
 """
 import numpy as np
 
 from pyge.activation import hill_fun
 
-def qentangled(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=hill_fun, activation_params=None) -> float:
+def wge(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=None, activation_params=None) -> float:
     r"""
-    Compute the fraction of entangled contacts defined as:
-        \frac{1}{N} \sum_{formed contacts} \sgn (G') f( |G'| )
+    Compute the weighted average of G' values, where weights
+    are given by the activation function passed as argument
+    evaluated on |G'|.
+    Definition:
+        \sum_{i,j \in C} G^\prime (i,j) \frac{f(|G^\prime| | G_0, w)}{\sum_{i,j \in C} f(|G^\prime| | G_0, w)}
+    where C is the set of formed native contacts 
+
+    The goal is to weight more higher values of GE
 
     Parameters
     ----------
@@ -42,18 +40,17 @@ def qentangled(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fu
     Returns
     -------
     float
-        Fraction of entangled contacts
+        Weighted GE average
     """
-    if activation_params is None:
-        activation_params = {"threshold":0.7, "hill_coeff":4}
+    if activation_fun is None and activation_params is None:
+        activation_fun = hill_fun
+        activation_params = {"threshold": 0.5, "hill_coeff": 4}
 
     # extract ge filtering wrt loop len. Default is no filtering
     ge_array = np.array(
         [x[2] for x in contact_thr_ge_list if (x[0][1]-x[0][0] >= min_loop_len) and (x[1][1]-x[1][0] >= min_thr_len)]
     )
+    # weights
+    weights = activation_fun(np.abs(ge_array), **activation_params)
 
-    # np.sign -> 0 if the argument is 0. Ok because otherwise the
-    # activation function would be 0 (and it is test to be in this way)
-    # Moreover, the activation function takes as input the abs of G'
-    integrand = np.sign(ge_array)*activation_fun(np.abs(ge_array), **activation_params)
-    return np.average(integrand)
+    return weights*ge_array/np.sum(weights)
