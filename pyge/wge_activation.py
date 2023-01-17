@@ -53,4 +53,4 @@ def wge(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=None,
     # weights
     weights = activation_fun(np.abs(ge_array), **activation_params)
 
-    return weights*ge_array/np.sum(weights)
+    return np.sum(weights*ge_array)/np.sum(weights)
