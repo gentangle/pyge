@@ -1,12 +1,14 @@
 """
-Module to compute weighted average of GE
-where weights are given by an Hill activation function
+Module to compute [W]eighted average of [GE]
+where weights are given by an Hill [A]ctivation function
+
+--> wGEa
 """
 import numpy as np
 
 from pyge.activation import hill_fun
 
-def wge(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=None, activation_params=None) -> float:
+def wgea(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=None, activation_params=None) -> float:
     r"""
     Compute the weighted average of G' values, where weights
     are given by the activation function passed as argument
