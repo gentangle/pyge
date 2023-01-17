@@ -174,7 +174,7 @@ def ge_configuration(ge_list_complete, min_loop_len, mode='max', **kwards):
             The possible ones are: 'max', 'average' or 'weighted'
             By default, 'max'
         kwargs:
-            exponent : int
+            exponent : float
                 exponent to which the absolute value of G' is elevated
 
     Returns:

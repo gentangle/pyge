@@ -2,10 +2,8 @@
 Set of activation functions
 """
 import numpy as np
-from numba import njit
 
-@njit
-def hill_fun(inp:np.ndarray, threshold:float, hill_coeff:float) -> np.ndarray:
+def hill_fun(inp, threshold:float, hill_coeff:float) -> np.ndarray:
     """
     Hill function
 
