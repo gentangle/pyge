@@ -1,13 +1,6 @@
 Contributing
 ============
 
-.. start-here
-
-There are several strategies on how to contribute to a project on github. Here,
-I explain the one I use for all the project I am participating. You can use this
-same strategy to contribute to this template or to suggest contributions to your
-project.
-
 Fork this repository
 --------------------
 
@@ -33,6 +26,7 @@ Add your fork as an upstream repository:
     git remote add myfork git://github.com/YOUR-USERNAME/python-project-skeleton.git
     git fetch myfork
 
+
 Install for developers
 ----------------------
 
@@ -50,7 +44,7 @@ If you are using `Anaconda`_ go for:
 
 ::
 
-    conda create --name newenv python=3.7
+    conda create --name newenv
     conda activate newenv
 
 Where :code:`newenv` is the name you wish to give to the environment
@@ -200,16 +194,16 @@ functionalities, for example:
     tox -e test  # runs unit tests
 
 
-.. _tox.ini: https://github.com/joaomcteixeira/python-project-skeleton/blob/latest/tox.ini
+.. _tox.ini: https://github.com/loscaati/pyge/blob/latest/tox.ini
 .. _Tox: https://tox.readthedocs.io/en/latest/
 .. _tox is installed: https://tox.readthedocs.io/en/latest/install.html
-.. _MANIFEST.in: https://github.com/joaomcteixeira/python-project-skeleton/blob/master/MANIFEST.in
-.. _Fork this repository before contributing: https://github.com/joaomcteixeira/python-project-skeleton/network/members
+.. _MANIFEST.in: https://github.com/loscaati/pyge/blob/master/MANIFEST.in
+.. _Fork this repository before contributing: https://github.com/loscaati/pyge/network/members
 .. _up to date with the upstream: https://gist.github.com/CristinaSolana/1885435
-.. _contributions to the project: https://github.com/joaomcteixeira/python-project-skeleton/network
+.. _contributions to the project: https://github.com/loscaati/pyge/network
 .. _Gitflow Workflow: https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
-.. _Pull Request: https://github.com/joaomcteixeira/python-project-skeleton/pulls
-.. _PULLREQUEST.rst: https://github.com/joaomcteixeira/python-project-skeleton/blob/master/docs/PULLREQUEST.rst
+.. _Pull Request: https://github.com/loscaati/pyge/pulls
+.. _PULLREQUEST.rst: https://github.com/loscaati/pyge/blob/master/docs/PULLREQUEST.rst
 .. _1: https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---no-ff
 .. _2: https://stackoverflow.com/questions/9069061/what-is-the-difference-between-git-merge-and-git-merge-no-ff
 .. _Installing packages using pip and virtual environments: https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment

@@ -5,6 +5,8 @@ include *.rst
 include LICENSE
 include requirements.txt
 include CODE_OF_CONDUCT.md
+recursive-include pyge *.html
+recursive-include pyge *.pyx
 
 exclude .appveyor.yml
 exclude .bumpversion.cfg

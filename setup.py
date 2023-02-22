@@ -25,7 +25,7 @@ long_description = '{}\n{}'.format(
 setup(
     name='pyge',
     version='0.1',
-    description='Python modules to compute the Gaussian Entanglement',
+    description='Python library to compute the Gaussian Entanglement',
     long_description=long_description,
     long_description_content_type='text/x-rst',
     license='MIT License',
@@ -51,23 +51,24 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         ],
-    # project_urls={
-        # 'webpage': 'https://github.com/joaomcteixeira/python-project-skeleton',
-        # 'Documentation': 'https://python-project-skeleton.readthedocs.io/en/latest/',
-        # 'Changelog': 'https://github.com/joaomcteixeira/python-project-skeleton/blob/master/CHANGELOG.rst',
-        # 'Issue Tracker': 'https://github.com/joaomcteixeira/python-project-skeleton/issues',
-        # 'Discussion Forum': 'https://github.com/joaomcteixeira/python-project-skeleton/discussions',
-        # },
-    # keywords=[
-    #     'ci', 'continuous-integration', 'project-template',
-    #     'project-skeleton', 'sample-project',
-        # eg: 'keyword1', 'keyword2', 'keyword3',
-    #     ],
-    # python_requires='>=3.7',
-    # install_requires=[
-    #     # https://stackoverflow.com/questions/14399534
-    #     'matplotlib>=3',
-    #     ],
+    project_urls={
+        'webpage': 'https://github.com/loscati/pyge',
+        'Documentation': 'https://pyge.readthedocs.io/en/latest/',
+        'Changelog': 'https://github.com/loscati/pyge/blob/master/CHANGELOG.rst',
+        'Issue Tracker': 'https://github.com/loscati/pyge/issues',
+        'Discussion Forum': 'https://github.com/loscati/pyge/discussions',
+        },
+    keywords=[
+        'bioinformatics', 'topology', 'entanglement'
+        ],
+    python_requires='>=3.7',
+    install_requires=[
+        # https://stackoverflow.com/questions/14399534
+        'cython',
+        'numpy',
+        'numba',
+        'mdanalysis'
+        ],
     # extras_require={
     #     # eg:
     #       'rst': ['docutils>=0.11'],

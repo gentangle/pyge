@@ -1,12 +1,12 @@
 [paths]
 source =
-    src
+    pyge
     */site-packages
 
 [run]
 branch = true
 source =
-    sampleproject
+    pyge
 parallel = true
 
 [report]
