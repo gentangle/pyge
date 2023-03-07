@@ -3,7 +3,7 @@ Read the Docs
 
 Activate your project at `Read the Docs platform`_ (RtD), their web interface
 is easy enough to follow without further explanations. If your documentation is
-building under the :ref:`tox workflow <Uniformed Tests with tox>` it will build
+building under the :ref:`tox workflow <Local Build>` it will build
 in at Read the Docs.
 
 Docs Requirements

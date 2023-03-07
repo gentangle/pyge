@@ -1,10 +1,10 @@
 sampleproject
 =============
 
-.. testsetup::
+.. .. testsetup::
 
-    from sampleproject import *
+..     from sampleproject import *
 
-.. automodule:: sampleproject
-    :members:
+.. .. automodule:: sampleproject
+..     :members:
 

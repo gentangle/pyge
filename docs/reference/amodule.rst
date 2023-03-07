@@ -1,5 +1,5 @@
 AModule
 =======
 
-.. automodule:: amodule
-    :members:
+.. .. automodule:: amodule
+..     :members:
