@@ -1,3 +1,4 @@
+cython
 sphinx>=2.2
 sphinx-py3doc-enhanced-theme
 sphinx-argparse
