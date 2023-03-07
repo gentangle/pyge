@@ -67,7 +67,8 @@ setup(
         'cython',
         'numpy',
         'numba',
-        'mdanalysis'
+        'mdanalysis',
+        'biopython'
         ],
     # extras_require={
     #     # eg:

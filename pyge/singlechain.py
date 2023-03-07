@@ -10,6 +10,13 @@ The user is responsible for this matter.
 import MDAnalysis as mda
 
 from pyge import gent
+from pyge.contactmap.contactmap import compute_contactmap
+
+modes = (
+    "all",
+    'max',
+    'weighted'
+)
 
 def _object_from_topology(topology_file):
     """
@@ -24,7 +31,18 @@ def _object_from_topology(topology_file):
     return universe.select_atoms("name CA").positions
 
 
-def singlechain(topology_file, contact_map, mode, loop_min_len=10, thr_min_len=10):
+"""
+Project:
+la funzione deve gestire le seguenti:
+1. leggere il pdb attraverso il parser che ah bisogno dei suoi parametri
+2. selezionare i CA del backbone, quindi avere la stringa per selezionare i CA (idea: mettere una string di default, se non funge allora ritornare un errore all'utente e dirgli di cambiarla con suggerimenti: resnum, altloc ...). Nota, serve sempre il "name CA", quinid l'utente deve solo aggiungere a questo
+3. calcolo cm, quindi altro dizionare per altri dati
+
+
+serve aggiungere dei test
+"""
+
+def ge_from_pdb(pdb_file, mode_options, parser_options=None, selection_option=None, cm_option=None):
     """
     Compute the Gaussian Entanglement for all loops and the whole configuration
     of a single polypeptide chain.
@@ -61,3 +79,41 @@ def singlechain(topology_file, contact_map, mode, loop_min_len=10, thr_min_len=1
     ge_config_result = gent.ge_configuration(ge_loops_result, loop_min_len, mode)
 
     return {"loop_thr_ge": ge_loops_result, f"loop_thr_ge_{mode}": ge_config_result}
+
+# def singlechain(topology_file, contact_map, mode, loop_min_len=10, thr_min_len=10):
+#     """
+#     Compute the Gaussian Entanglement for all loops and the whole configuration
+#     of a single polypeptide chain.
+
+#     The user provides a topology file, usually a PDB, from which the alpha carbon
+#     chain (backbone) is extracted to compute the self entanglement.
+
+#     Parameters
+#     ---------
+#     topology_file : str or Path
+#         Path to the topology file. Usually a PDB
+#     contact_map : array_like
+#         2D array having entries as the distance between alpha carbon belonging to
+#         residues that are defined in contact by the user
+#     mode : str
+#         Select the GE for the whole configuration. See gent.ge_configuration for more details
+#     loop_min_len : int
+#         Minimum number of residues for a loop
+#     thr_min_len : int
+#         Minimum number of residues for a thr
+
+#     Returns
+#     -------
+#     out : dict
+#         Dictionary with the result of the computation. Keywords are:
+#         - 'loop_thr_ge' : format of ge_loops
+#             GE for all loops in the configuration
+#         - 'loop_thr_ge_MODE' : format of ge_configuration
+#             GE for the whole configuration as selected with MODE parameter
+#     """
+#     # load topology file as Universe Object
+#     ca_positions = _object_from_topology(topology_file)
+#     ge_loops_result = gent.ge_loops(contact_map, ca_positions, thr_min_len)
+#     ge_config_result = gent.ge_configuration(ge_loops_result, loop_min_len, mode)
+
+#     return {"loop_thr_ge": ge_loops_result, f"loop_thr_ge_{mode}": ge_config_result}
