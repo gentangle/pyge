@@ -31,7 +31,7 @@ def _ca_from_topology(topology_file, selection_options):
 
 
 # TODO serve aggiungere dei test
-def ge_from_pdb(pdb_file, mode_options, parser_options=None, selection_options=None):
+def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     """
     TODO
 
@@ -39,33 +39,41 @@ def ge_from_pdb(pdb_file, mode_options, parser_options=None, selection_options=N
     """
 
     # Setup variables
-    if selection_options is None:
-        selection = ''
-    if "model_id" in parser_options:
-        model_id = parser_options["model_id"]
+    if "model_id" in cm_options:
+        model_id = cm_options["model_id"]
     else:
         raise ValueError("You must provide the keyword 'model_id'")
-    if "chain_id" in parser_options:
-        chain_id = parser_options["chain_id"]
+    if "chain_id" in cm_options:
+        chain_id = cm_options["chain_id"]
     else:
         raise ValueError("You must provide the keyword 'chain_id'")
-    if "threshold" in parser_options:
-        threshold = parser_options["threshold"]
+    if "threshold" in cm_options:
+        threshold = cm_options["threshold"]
     else:
         raise ValueError("You must provide the keyword 'threshold'")
-    if "altloc" in selection_options:
-        search = re.search("altloc", selection_options)
-        altloc = selection_options[search.span()[1]:search.span()[1]+2].strip(" ")
-    elif "altloc" in parser_options:
-        altloc = parser_options["altloc"]
-    if "to_include" in parser_options:
-        to_include = parser_options["to_include"]
+    if "to_include" in cm_options:
+        to_include = cm_options["to_include"]
     else:
         to_include = None
-    if "to_ignore" in parser_options:
-        to_ignore = parser_options["to_ignore"]
+    if "to_ignore" in cm_options:
+        to_ignore = cm_options["to_ignore"]
     else:
         to_ignore = None
+
+    # default altloc if not explicitated differently by the user
+    altloc = "A"
+    if selection_options is not None:
+        if "altloc" in selection_options:
+            search = re.search("altloc", selection_options)
+            altloc = selection_options[search.span()[1]:search.span()[1]+2].strip(" ")
+            assert len(altloc) == 1
+        elif "altloc" in cm_options:
+            altloc = cm_options["altloc"]
+        selection = selection_options
+    else:
+        selection = ''
+        if "altloc" in cm_options:
+            altloc = cm_options["altloc"]
 
     ca_positions = _ca_from_topology(pdb_file, selection)
     cm = compute_contactmap(
@@ -77,20 +85,24 @@ def ge_from_pdb(pdb_file, mode_options, parser_options=None, selection_options=N
         to_ignore=to_ignore
     )
 
-    if "thr_min_len" in mode_options:
-        thr_min_len = mode_options["thr_min_len"]
+    if "thr_min_len" in ge_options:
+        thr_min_len = ge_options["thr_min_len"]
     else:
         thr_min_len = 0
-    if "loop_min_len" in mode_options:
-        loop_min_len = mode_options["loop_min_len"]
+    if "loop_min_len" in ge_options:
+        loop_min_len = ge_options["loop_min_len"]
     else:
         loop_min_len = 0
 
     ge_loops_result = gent.ge_loops(cm, ca_positions, thr_min_len)
     ge_config_max = gent.ge_configuration(ge_loops_result, loop_min_len, "max")
-    ge_config_w = gent.ge_configuration(ge_loops_result, loop_min_len, "weighted", {"hill_coeff":3, "thr":0.5})
+    ge_config_w = gent.ge_configuration(
+        ge_list_complete=ge_loops_result,
+        loop_min_len=loop_min_len,
+        mode="weighted",
+        kwards={"hill_coeff":3, "threshold":0.5})
 
-    return {"loop_thr_ge": ge_loops_result, "max_ge": ge_config_max, "ge_weighted": ge_config_w}
+    return {"loop_thr_ge": ge_loops_result, "ge_max": ge_config_max, "ge_weighted": ge_config_w}
 
 # def singlechain(topology_file, contact_map, mode, loop_min_len=10, thr_min_len=10):
 #     """

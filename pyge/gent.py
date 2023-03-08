@@ -10,6 +10,7 @@ import numpy as np
 from numba import njit
 
 from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
+from pyge.activation import hill_fun
 
 # Global parameters
 back_allowed = ('numpy', 'cython')
@@ -187,10 +188,18 @@ def ge_configuration(ge_list_complete, loop_min_len, mode='max', **kwards):
         # Maximum
         fun_selection = max
         params = {"key": abs}
-    elif mode in (mode_allowed[1], mode_allowed[2]):
+    elif mode == mode_allowed[1]:
         # Average
         fun_selection = np.average
         params = {}
+        # there is no loop or thread associated to the average value
+        loop, thread = None, None
+    elif mode == mode_allowed[2]:
+        activation_function = hill_fun
+        # get exponent if present, otherwise set it to 3 (see salicari2023)
+        hill_coeff = kwards.get("hill_coeff", 3)
+        threshold = kwards.get("threshold", 0.5)
+        activation_params = {"threshold": threshold, "hill_coeff": hill_coeff}
         # there is no loop or thread associated to the average value
         loop, thread = None, None
     else:
@@ -199,29 +208,15 @@ def ge_configuration(ge_list_complete, loop_min_len, mode='max', **kwards):
     ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= loop_min_len]
     if len(ge_loop_filtered) == 0:
         return None
-
     ge_values = [ge[2] for ge in ge_loop_filtered]
 
     if mode == mode_allowed[2]:
-        # get exponent if present, otherwise set it to 1
-        exponent = kwards.get("exponent", 1)
-        # weight the average of GE using the absolute values of GE
-        ge_values_abs = np.abs(ge_values)**exponent
-        sorting_indices = np.argsort(ge_values_abs)
-        cumsum = np.cumsum(ge_values_abs[sorting_indices])
-        cumsum_sum = cumsum.sum()
-        if cumsum_sum == 0:
-            # case in which a low number of loops return all
-            # G' equal to 0
-            params = {}
-        else:
-            params = {"weights": cumsum/cumsum_sum}
-        ge_values = np.array(ge_values)[sorting_indices]
-
-    ge_selected = fun_selection(ge_values, **params)
-
-    if mode == mode_allowed[0]:
-        loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
-        thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
+        weights = activation_function(np.abs(ge_values), **activation_params)
+        ge_selected = np.sum(weights*ge_values)/np.sum(weights)
+    else:
+        ge_selected = fun_selection(ge_values, **params)
+        if mode == mode_allowed[0]:
+            loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
+            thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
 
     return (loop, thread, ge_selected)
