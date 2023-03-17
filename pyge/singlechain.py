@@ -16,17 +16,30 @@ from pyge.contactmap.contactmap import compute_contactmap
 
 def _ca_from_topology(topology_file, selection_options):
     """
-    TODO
-    Handle the topology file creating an MDAnalysis.core.Universe object
+    CA position vectors from the PDB (topology) file
 
-    Selects only the CA atoms (note, the library should distinguish between
-    alpha carbon and Calcium ions)
+    Parameters
+    ----------
+    topology_file : str or Path
+        Path to the PDB file
+    selection_options : str
+        String to be used in the selection of atoms. For example, to select
+        only the alpha carbon atoms of a specific chain, the string should be
+        "and chain A" (note, the library should distinguish between
+        alpha carbon and Calcium ions). See MDAnalysis documentation for more details
+
+    Returns
+    -------
+    out : array_like
+        Array of shape (N, 3) containing the position vectors of the alpha carbon atoms
     """
-    # print("WARNING: pyge does not check for correctness nor completeness of the chain.\
-    #     Please, make sure that the topology file provided is correct\n")
+    if selection_options != "":
+        selection_options = " and " + selection_options
     universe = mda.Universe(str(topology_file))
     ca_positions = universe.select_atoms("name CA" + selection_options).positions
-    # TODO: add a check about len
+    # TODO: for now the function prints the number of CAs
+    # with the aim that the user check if the selection is correct
+    print(f"Number of CA atoms selected: {len(ca_positions)}")
     return ca_positions
 
 
@@ -36,6 +49,9 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     TODO
 
     If altloc is fixed in selection_option, then the keyword in parser_option is ignored for consistency
+
+    example:
+    out = ge_from_pdb("1srl.pdb", ge_options={"thr_min_len":10,"loop_min_thr":0}, cm_options={"model_id":1, "chain_id":"A", "threshold":4.5, "to_ignore":["HOH"]})
     """
 
     # Setup variables
