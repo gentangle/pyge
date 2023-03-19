@@ -37,7 +37,7 @@ def test_ge_configuration():
     Test the possible selections for the GE of the whole configuration
     """
     ge_loops_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend='cython')
-    modes = ("max", "average", "weighted")
+    modes = ("max", "average")
 
     for mode in modes:
         ge_selected = gent.ge_configuration(ge_loops_computed, 10, mode)

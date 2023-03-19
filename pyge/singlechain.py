@@ -8,7 +8,7 @@ the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
 import re
-from typing import List
+from typing import List, Union
 from dataclasses import dataclass
 
 import MDAnalysis as mda
@@ -18,9 +18,9 @@ from pyge.contactmap.contactmap import compute_contactmap
 
 @dataclass
 class GEResult:
-    loop_thr_ge: List[List[List[int], List[int], float]]
-    ge_max: List[List[int], List[int], float]
-    ge_weighted: List[List[int], List[int], float]
+    loop_thr_ge: List[List[Union[List[int], List[int], float]]]
+    ge_max: List[Union[List[int], List[int], float]]
+    ge_weighted: List[Union[List[int], List[int], float]]
 
 
 def _ca_from_topology(topology_file, selection_options):
@@ -43,7 +43,7 @@ def _ca_from_topology(topology_file, selection_options):
         Array of shape (N, 3) containing the position vectors of the alpha carbon atoms
     """
     if selection_options != "":
-        selection_options = " and " + selection_options
+        selection_options = " " + selection_options
     universe = mda.Universe(str(topology_file))
     ca_positions = universe.select_atoms("name CA" + selection_options).positions
     # TODO: for now the function prints the number of CAs
@@ -80,6 +80,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         cm_options={
             "model_id":1, "chain_id":"A", "threshold":4.5, "to_ignore":["HOH"]
             }
+        selection_options="and altloc A"
     )
 
     Parameters
@@ -104,7 +105,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
                 Minimum distance for which two non-Hydrogen atoms are considered
                 in contact
             to_include : List[str], optional
-                List of residue names to include when parsing the PDB
+                List of residue names to include when parsing the PDBge_config_max
             to_ignore : List[str], optional
                 List of residue names to ignore when parsing the PDB.
                 E.g. water (HOH), ions etc.
@@ -166,6 +167,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         if "altloc" in cm_options:
             altloc = cm_options["altloc"]
 
+    pdb_file = str(pdb_file)
     ca_positions = _ca_from_topology(pdb_file, selection)
     cm = compute_contactmap(
         pdb_file,

@@ -22,14 +22,14 @@ def test_ge_from_pdb():
     expected_output_1 = {
         "loop_thr_ge": ge_1ucs_native,
         "ge_max": [
-            ge_1ucs_native_modes["max"],
-            ge_1ucs_native_modes["max_loop"],
-            ge_1ucs_native_modes["max_thr"]
+            tuple(ge_1ucs_native_modes["max_loop"]),
+            tuple(ge_1ucs_native_modes["max_thr"]),
+            ge_1ucs_native_modes["max"]
         ],
         "ge_weighted": [
             None,
             None,
-            -0.68
+            -0.68443
         ]
     }
     result_1 = ge_from_pdb(
@@ -39,6 +39,17 @@ def test_ge_from_pdb():
         "model_id": 1, "chain_id": "A", "threshold": 4.5, "to_ignore": ["HOH"]},
         selection_options=None
     )
-    assert result_1["loop_thr_ge"] == expected_output_1["loop_thr_ge"]
-    assert result_1["ge_max"] == expected_output_1["ge_max"]
-    assert result_1["ge_weighted"] == expected_output_1["ge_weighted"]
+    for res, exp in zip(result_1.loop_thr_ge, ge_1ucs_native):
+        assert res[0] == exp[0]
+        assert res[1] == exp[1]
+        assert np.isclose(
+            res[2],
+            exp[2]
+        )
+    assert result_1.ge_max[0] == expected_output_1["ge_max"][0]
+    assert result_1.ge_max[1] == expected_output_1["ge_max"][1]
+    assert np.isclose(result_1.ge_max[2], expected_output_1["ge_max"][2], atol=0.0001)
+    assert np.isclose(
+        result_1.ge_weighted[2], expected_output_1["ge_weighted"][2],
+        atol=0.0001
+        )

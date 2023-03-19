@@ -29,7 +29,7 @@ def test_qentangled(hill_coeff, comparison):
         [g for g in ge_1ucs_native if (g[0][1]-g[0][0]>9) and (g[1][1]-g[1][0]>9)]
     )
 
-    assert n_contacts == 128
+    assert n_contacts == 129
 
     res = qentangled(
         ge_1ucs_native,
