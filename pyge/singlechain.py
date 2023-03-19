@@ -16,6 +16,7 @@ import MDAnalysis as mda
 from pyge import gent
 from pyge.contactmap.contactmap import compute_contactmap
 
+
 @dataclass
 class GEResult:
     loop_thr_ge: List[List[Union[List[int], List[int], float]]]
@@ -64,12 +65,12 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     This function uses the ATOM coordinates from the pdb file,
     hence is responsibility of the user to check the correctness of the file.
 
-    The user control the GE calculation through the ge_options dictionary 
+    The user control the GE calculation through the ge_options dictionary
     and the contacts calculation through the cm_options dictionary.
     The `selection_options` is a string that is passed to the PDBParser
     to select only certain atoms. Chain and model selection are controlled
     through the cm_options dictionary.
-    The `altloc` option can be modified by the user through 
+    The `altloc` option can be modified by the user through
     the `selection_options` and `cm_options` dictionary.
     If so, the function will give priority to the `selection_options`.
 
@@ -157,13 +158,15 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     if selection_options is not None:
         if "altloc" in selection_options:
             search = re.search("altloc", selection_options)
-            altloc = selection_options[search.span()[1]:search.span()[1]+2].strip(" ")
+            altloc = selection_options[search.span()[1]: search.span()[1] + 2].strip(
+                " "
+            )
             assert len(altloc) == 1
         elif "altloc" in cm_options:
             altloc = cm_options["altloc"]
         selection = selection_options
     else:
-        selection = ''
+        selection = ""
         if "altloc" in cm_options:
             altloc = cm_options["altloc"]
 
@@ -171,11 +174,12 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     ca_positions = _ca_from_topology(pdb_file, selection)
     cm = compute_contactmap(
         pdb_file,
-        model_id, chain_id,
+        model_id,
+        chain_id,
         threshold,
         altloc=altloc,
         to_include=to_include,
-        to_ignore=to_ignore
+        to_ignore=to_ignore,
     )
 
     if "thr_min_len" in ge_options:
@@ -193,7 +197,8 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         ge_list_complete=ge_loops_result,
         loop_min_len=loop_min_len,
         mode="weighted",
-        kwards={"hill_coeff":3, "threshold":0.5})
+        kwards={"hill_coeff": 3, "threshold": 0.5},
+    )
 
     return GEResult(
         loop_thr_ge=ge_loops_result, ge_max=ge_config_max, ge_weighted=ge_config_w

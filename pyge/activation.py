@@ -3,7 +3,8 @@ Set of activation functions
 """
 import numpy as np
 
-def hill_fun(inp, threshold:float, hill_coeff:float) -> np.ndarray:
+
+def hill_fun(inp, threshold: float, hill_coeff: float) -> np.ndarray:
     """
     Hill function
 
@@ -24,8 +25,8 @@ def hill_fun(inp, threshold:float, hill_coeff:float) -> np.ndarray:
     # handle of 0 (because we divide for 0 even thought the function tends to 0
     # for inp going to 0)
     inp = np.asarray(inp)
-    with np.errstate(divide='ignore'):
-        out = 1/( 1 + (threshold/inp)**hill_coeff )
+    with np.errstate(divide="ignore"):
+        out = 1 / (1 + (threshold / inp) ** hill_coeff)
     # check fo NaN
     if np.isnan(np.sum(out)):
         raise RuntimeError("NaNs are detected as output of the Hill function")

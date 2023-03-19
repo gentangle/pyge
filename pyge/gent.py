@@ -13,8 +13,8 @@ from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entangle
 from pyge.activation import hill_fun
 
 # Global parameters
-back_allowed = ('numpy', 'cython')
-mode_allowed = ('max', 'average', 'weighted')
+back_allowed = ("numpy", "cython")
+mode_allowed = ("max", "average", "weighted")
 
 
 def _loop_list(contact_map):
@@ -38,15 +38,18 @@ def _loop_list(contact_map):
     cm_triu = np.triu(contact_map, 1)
     # in a single polypeptide chain, each contact creates a loop
     idx = np.where(cm_triu != 0)
-    return np.hstack((idx[0][...,None], idx[1][...,None]))
+    return np.hstack((idx[0][..., None], idx[1][..., None]))
+
 
 def _midposition_vectors(bead_position):
     """Computes R vectors for GE calculation, i.e. bead positions"""
-    return ((bead_position[1:] + bead_position[:-1])/2).astype(float)
+    return ((bead_position[1:] + bead_position[:-1]) / 2).astype(float)
+
 
 def _bond_vectors(bead_position):
     """Computes DeltaR for GE calculation, i.e. bond vectors"""
     return (bead_position[1:] - bead_position[:-1]).astype(float)
+
 
 @njit
 def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
@@ -68,9 +71,9 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
         dR = positions[i] - positions[thr0:thr1]
         ddR = np.cross(bonds[i], bonds[thr0:thr1])
         gauss += np.sum(
-            np.sum((dR*ddR), axis=1) / # dR*ddR shape = (10, 3)
-            np.power(np.sum(dR**2, axis=1), 3/2)
-            )
+            np.sum((dR * ddR), axis=1)
+            / np.power(np.sum(dR**2, axis=1), 3 / 2)  # dR*ddR shape = (10, 3)
+        )
 
         # Readable but slow for loop
         # for j in range(thr0, thr1):
@@ -78,9 +81,10 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
         #     ddR = np.cross(bonds[i], bonds[j])
         #     gauss += (dR/(dR.dot(dR)**(3/2))).dot(ddR)
 
-    return gauss/(4*np.pi)
+    return gauss / (4 * np.pi)
 
-def ge_loops(contact_map, bead_position, thr_min_len, backend='cython'):
+
+def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain
 
@@ -115,7 +119,7 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend='cython'):
     else:
         raise ValueError(f"Backend not valid, use one of the following: {back_allowed}")
 
-    len_chain_1 = bead_position.shape[0] # len chain - 1
+    len_chain_1 = bead_position.shape[0]  # len chain - 1
     loops = _loop_list(contact_map)
     # note: first index is 0
     # note: second index > first index, for construction
@@ -133,10 +137,10 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend='cython'):
         j1_max = 0
         j2_max = 0
         # search before the loop
-        for j1 in range(i1-thr_min_len):
+        for j1 in range(i1 - thr_min_len):
             for increment in range(i1 - thr_min_len - j1):
                 j2 = j1 + thr_min_len + increment
-                GE_loop = ge_func(i1,i2, j1,j2, midpos, bonds)
+                GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max):
                     GE_max = GE_loop
                     j1_max = j1
@@ -145,17 +149,18 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend='cython'):
         for j1 in range(i2 + 1, len_chain_1 - thr_min_len):
             for increment in range(len_chain_1 - thr_min_len - j1):
                 j2 = j1 + thr_min_len + increment
-                GE_loop = ge_func(i1,i2, j1,j2, midpos, bonds)
+                GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max):
                     GE_max = GE_loop
                     j1_max = j1
                     j2_max = j2
         # loop's GE is the maximum in modulus
-        result.append(((i1,i2), (j1_max, j2_max), GE_max))
+        result.append(((i1, i2), (j1_max, j2_max), GE_max))
 
     return result
 
-def ge_configuration(ge_list_complete, loop_min_len, mode='max', **kwards):
+
+def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
     """
     Returns the GE of a chain and the corresponding loop-thread.
     The user can chose the mode use to select the Gaussian Entanglement
@@ -207,14 +212,16 @@ def ge_configuration(ge_list_complete, loop_min_len, mode='max', **kwards):
             f"Mode {mode} not valid, use one of the following: {mode_allowed}"
         )
 
-    ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= loop_min_len]
+    ge_loop_filtered = [
+        x for x in ge_list_complete if x[0][1] - x[0][0] >= loop_min_len
+    ]
     if len(ge_loop_filtered) == 0:
         return None
     ge_values = [ge[2] for ge in ge_loop_filtered]
 
     if mode == mode_allowed[2]:
         weights = activation_function(np.abs(ge_values), **activation_params)
-        ge_selected = np.sum(weights*ge_values)/np.sum(weights)
+        ge_selected = np.sum(weights * ge_values) / np.sum(weights)
     else:
         ge_selected = fun_selection(ge_values, **params)
         if mode == mode_allowed[0]:

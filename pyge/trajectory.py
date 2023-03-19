@@ -12,6 +12,7 @@ import MDAnalysis as mda
 from pyge import gent
 from pyge.contacts import contacts_formed_cm
 
+
 def _object_from_trajectory(topology_file, trajectory_file):
     """
     Create a MDAnalysis.core.Universe object ot handle the trajectory files
@@ -77,19 +78,16 @@ def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params)
             ca_positions = universe.trajectory.ts.positions
 
             contact_map_config = contacts_formed_cm(
-                contacts_params["contact_map"],
-                ca_positions,
-                contacts_params["gamma"])
+                contacts_params["contact_map"], ca_positions, contacts_params["gamma"]
+            )
             ge_loops_result = gent.ge_loops(
-                contact_map_config,
-                ca_positions,
-                ge_params["thr_min_len"])
+                contact_map_config, ca_positions, ge_params["thr_min_len"]
+            )
 
             if ge_params["whole_config"]:
                 ge_config_result = gent.ge_configuration(
-                    ge_loops_result,
-                    ge_params["loop_min_len"],
-                    ge_params["mode"])
+                    ge_loops_result, ge_params["loop_min_len"], ge_params["mode"]
+                )
 
                 # save only the GE for the whole configuration
                 ge_timeseries.append(ge_config_result)

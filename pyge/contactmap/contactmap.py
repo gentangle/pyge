@@ -5,11 +5,8 @@ from pyge.contactmap.pdb_parser import get_residues
 
 
 def compute_contactmap(
-        file,
-        model_id, chain_id,
-        threshold,
-        altloc="A",
-        to_include=None, to_ignore=None):
+    file, model_id, chain_id, threshold, altloc="A", to_include=None, to_ignore=None
+):
     """
     Matrix with the interaction network, or contact map, extracted
     from a PDb structure. The contact definition is purely geometric.
@@ -38,12 +35,12 @@ def compute_contactmap(
     """
     res_list = get_residues(file, model_id, chain_id, to_include, to_ignore)
     n_residues = len(res_list)
-    contact_map = np.zeros((n_residues,n_residues))
+    contact_map = np.zeros((n_residues, n_residues))
 
     # Contacts are computed between residues which are separated by at least
     # three other residues in the polypeptide chain [noel2012]
-    for row in range(0, n_residues-4):
-        for col in range(row+4, n_residues):
+    for row in range(0, n_residues - 4):
+        for col in range(row + 4, n_residues):
 
             res1 = res_list[row]
             res2 = res_list[col]
@@ -68,14 +65,14 @@ def compute_contactmap(
                     # between them
                     distance = atom1 - atom2
                     if distance < threshold:
-                        Ca1 = res1['CA']
-                        Ca2 = res2['CA']
+                        Ca1 = res1["CA"]
+                        Ca2 = res2["CA"]
                         if Ca1.is_disordered():
                             Ca1.disordered_select(altloc)
                         if Ca2.is_disordered():
                             Ca2.disordered_select(altloc)
 
-                        contact_map[row,col] = Ca2 - Ca1
+                        contact_map[row, col] = Ca2 - Ca1
                         stop_res1 = True
                         break
                 if stop_res1:
@@ -83,5 +80,5 @@ def compute_contactmap(
     return contact_map
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

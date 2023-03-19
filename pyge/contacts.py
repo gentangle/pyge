@@ -5,6 +5,7 @@ from MDAnalysis.analysis import distances
 # TODO: optimize this computation: I think is unnecessary to loop over the entire matrix
 # because more then half of it is empty
 
+
 def contacts_formed_cm(contact_map_native, ca_posistions, gamma):
     """
     Compute a contact map for the configuration stored in ca_positions.
@@ -44,4 +45,4 @@ def contacts_formed_cm(contact_map_native, ca_posistions, gamma):
     triu = np.triu_indices_from(sq_dist_arr, k=1)
     sq_dist_arr[triu] = self_distances
 
-    return sq_dist_arr <= gamma*cm_native_mod
+    return sq_dist_arr <= gamma * cm_native_mod
