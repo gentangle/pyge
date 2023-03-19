@@ -10,6 +10,7 @@ import numpy as np
 from numba import njit
 
 from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
+from pyge.activation import hill_fun
 
 # Global parameters
 back_allowed = ('numpy', 'cython')
@@ -79,7 +80,7 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
 
     return gauss/(4*np.pi)
 
-def ge_loops(contact_map, bead_position, min_thr_len, backend='cython'):
+def ge_loops(contact_map, bead_position, thr_min_len, backend='cython'):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain
 
@@ -90,10 +91,10 @@ def ge_loops(contact_map, bead_position, min_thr_len, backend='cython'):
         contact_map : array_like
             2D numpy array: list of the 3 dimensional position for
             each C_alpha (or residue in coarse-grained fashion)
-        min_thr_len : int
+        thr_min_len : int
             Let i and j be indexes for the thread;
             Then this argument set the condition:
-                |j-i| =>  min_thr_len
+                |j-i| =>  thr_min_len
         backend : str
             Specifies the backend for the GE calculation.
             Possible values: 'numpy', 'cython'.
@@ -132,18 +133,18 @@ def ge_loops(contact_map, bead_position, min_thr_len, backend='cython'):
         j1_max = 0
         j2_max = 0
         # search before the loop
-        for j1 in range(i1-min_thr_len):
-            for increment in range(i1 - min_thr_len - j1):
-                j2 = j1 + min_thr_len + increment
+        for j1 in range(i1-thr_min_len):
+            for increment in range(i1 - thr_min_len - j1):
+                j2 = j1 + thr_min_len + increment
                 GE_loop = ge_func(i1,i2, j1,j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max):
                     GE_max = GE_loop
                     j1_max = j1
                     j2_max = j2
         # search after the loop
-        for j1 in range(i2 + 1, len_chain_1 - min_thr_len):
-            for increment in range(len_chain_1 - min_thr_len - j1):
-                j2 = j1 + min_thr_len + increment
+        for j1 in range(i2 + 1, len_chain_1 - thr_min_len):
+            for increment in range(len_chain_1 - thr_min_len - j1):
+                j2 = j1 + thr_min_len + increment
                 GE_loop = ge_func(i1,i2, j1,j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max):
                     GE_max = GE_loop
@@ -154,7 +155,7 @@ def ge_loops(contact_map, bead_position, min_thr_len, backend='cython'):
 
     return result
 
-def ge_configuration(ge_list_complete, min_loop_len, mode='max', **kwards):
+def ge_configuration(ge_list_complete, loop_min_len, mode='max', **kwards):
     """
     Returns the GE of a chain and the corresponding loop-thread.
     The user can chose the mode use to select the Gaussian Entanglement
@@ -165,10 +166,10 @@ def ge_configuration(ge_list_complete, min_loop_len, mode='max', **kwards):
         ge_list_complete : see output ge_loops
             List of n by 3 elements with information about loops, threads and
             G' values
-        min_loop_len : int
+        loop_min_len : int
             Let i and j be indexes for the thread;
             Then this argument set the condition:
-                |j-i| =>  min_loop_len
+                |j-i| =>  loop_min_len
         mode : str
             how to select the G' for the whole configuration.
             The possible ones are: 'max', 'average' or 'weighted'
@@ -187,41 +188,35 @@ def ge_configuration(ge_list_complete, min_loop_len, mode='max', **kwards):
         # Maximum
         fun_selection = max
         params = {"key": abs}
-    elif mode in (mode_allowed[1], mode_allowed[2]):
+    elif mode == mode_allowed[1]:
         # Average
         fun_selection = np.average
         params = {}
         # there is no loop or thread associated to the average value
         loop, thread = None, None
+    elif mode == mode_allowed[2]:
+        activation_function = hill_fun
+        # get exponent if present, otherwise set it to 3 (see salicari2023)
+        hill_coeff = kwards.get("hill_coeff", 3)
+        threshold = kwards.get("threshold", 0.5)
+        activation_params = {"threshold": threshold, "hill_coeff": hill_coeff}
+        # there is no loop or thread associated to the average value
+        loop, thread = None, None
     else:
         raise ValueError(f"Mode {mode} not valid, use one of the following: {mode_allowed}")
 
-    ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= min_loop_len]
+    ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= loop_min_len]
     if len(ge_loop_filtered) == 0:
         return None
-
     ge_values = [ge[2] for ge in ge_loop_filtered]
 
     if mode == mode_allowed[2]:
-        # get exponent if present, otherwise set it to 1
-        exponent = kwards.get("exponent", 1)
-        # weight the average of GE using the absolute values of GE
-        ge_values_abs = np.abs(ge_values)**exponent
-        sorting_indices = np.argsort(ge_values_abs)
-        cumsum = np.cumsum(ge_values_abs[sorting_indices])
-        cumsum_sum = cumsum.sum()
-        if cumsum_sum == 0:
-            # case in which a low number of loops return all
-            # G' equal to 0
-            params = {}
-        else:
-            params = {"weights": cumsum/cumsum_sum}
-        ge_values = np.array(ge_values)[sorting_indices]
-
-    ge_selected = fun_selection(ge_values, **params)
-
-    if mode == mode_allowed[0]:
-        loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
-        thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
+        weights = activation_function(np.abs(ge_values), **activation_params)
+        ge_selected = np.sum(weights*ge_values)/np.sum(weights)
+    else:
+        ge_selected = fun_selection(ge_values, **params)
+        if mode == mode_allowed[0]:
+            loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
+            thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
 
     return (loop, thread, ge_selected)

@@ -46,7 +46,7 @@ def wgea(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=None
     """
     if activation_fun is None and activation_params is None:
         activation_fun = hill_fun
-        activation_params = {"threshold": 0.5, "hill_coeff": 4}
+        activation_params = {"threshold": 0.5, "hill_coeff": 3}
 
     # extract ge filtering wrt loop len. Default is no filtering
     ge_array = np.array(
