@@ -9,7 +9,9 @@ import numpy as np
 from pyge.singlechain import ge_from_pdb
 
 parent = pathlib.Path(__file__).parent.resolve()
-with open(parent / "data/1ucs_ge_configurations_modes.json", "r", encoding="utf-8") as fin:
+with open(
+    parent / "data/1ucs_ge_configurations_modes.json", "r", encoding="utf-8"
+    ) as fin:
     ge_1ucs_native_modes = json.load(fin)
 
 # load ge_results for the two test cases

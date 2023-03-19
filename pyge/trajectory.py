@@ -61,7 +61,8 @@ def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params)
     Return
     ------
         ge_timeseries : see below
-            If ge_params['whole_config'] is True, see gent.ge_configuration for more details.
+            If ge_params['whole_config'] is True,
+            see gent.ge_configuration for more details.
             Otherwise see gent.ge_loops
     """
     universe = _object_from_trajectory(topology_file, trajectory_file)

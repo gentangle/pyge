@@ -5,7 +5,11 @@ import Bio.PDB as pdb
 
 from pyge.contactmap.protein_letters import protein_letters_3to1
 
-def get_residues(file, model_id, chain_id, to_include=None, to_ignore=None, debug=False) -> List[pdb.Residue.Residue]:
+def get_residues(
+        file,
+        model_id, chain_id,
+        to_include=None, to_ignore=None,
+        debug=False) -> List[pdb.Residue.Residue]:
     """
     List of Residue objects read from a PDB file
     This function parse only standard amino acids as specified in the
@@ -76,19 +80,24 @@ def get_residues(file, model_id, chain_id, to_include=None, to_ignore=None, debu
 
         elif residue.get_resname() in to_include:
             if debug:
-                print(f"Residue {residue.get_resname()} with resID {residue.id[1]} \
-                    has been INCLUDED because specified by the user through `to_include`")
+                print(
+                    (f"Residue {residue.get_resname()} with resID {residue.id[1]} "
+                    "has been INCLUDED because specified "
+                    "by the user through `to_include`"))
             res_list.append(residue)
 
         elif residue.get_resname() in to_ignore:
             if debug:
-                print(f"Residue {residue.get_resname()} with resID {residue.id[1]} \
-                    has been EXCLUDED because specified by the user through `to_ignore`")
+                print(
+                    (f"Residue {residue.get_resname()} with resID {residue.id[1]} "
+                    "has been EXCLUDED because specified "
+                    "by the user through `to_ignore`"))
             continue
 
         else:
-            raise RuntimeError(f"Residue {residue.get_resname()} with resID {residue.id[1]} \
-                is not included in:\n{list(protein_letters_3to1.keys())}")
+            raise RuntimeError(
+                (f"Residue {residue.get_resname()} with resID {residue.id[1]} "
+                "is not included in:\n{list(protein_letters_3to1.keys())}"))
     return res_list
 
 

@@ -12,7 +12,9 @@ parent = pathlib.Path(__file__).parent.resolve()
 ge_1ucs_native = np.load(
     parent / "data/GE_1ucs_native.npy",
     allow_pickle=True)
-with open(parent / "data/1ucs_ge_configurations_modes.json", "r", encoding="utf-8") as fin:
+with open(
+    parent / "data/1ucs_ge_configurations_modes.json", "r", encoding="utf-8"
+    ) as fin:
     ge_1ucs_native_modes = json.load(fin)
 cm_1ucs = np.load(
     parent / "data/1ucs_cm.npy"

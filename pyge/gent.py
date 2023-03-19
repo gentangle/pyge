@@ -203,7 +203,9 @@ def ge_configuration(ge_list_complete, loop_min_len, mode='max', **kwards):
         # there is no loop or thread associated to the average value
         loop, thread = None, None
     else:
-        raise ValueError(f"Mode {mode} not valid, use one of the following: {mode_allowed}")
+        raise ValueError(
+            f"Mode {mode} not valid, use one of the following: {mode_allowed}"
+        )
 
     ge_loop_filtered = [x for x in ge_list_complete if x[0][1]-x[0][0] >= loop_min_len]
     if len(ge_loop_filtered) == 0:

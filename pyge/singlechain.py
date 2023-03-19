@@ -216,7 +216,8 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
 #         2D array having entries as the distance between alpha carbon belonging to
 #         residues that are defined in contact by the user
 #     mode : str
-#         Select the GE for the whole configuration. See gent.ge_configuration for more details
+#         Select the GE for the whole configuration.
+#         See gent.ge_configuration for more details
 #     loop_min_len : int
 #         Minimum number of residues for a loop
 #     thr_min_len : int

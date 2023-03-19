@@ -3,7 +3,13 @@ import numpy as np
 
 from pyge.contactmap.pdb_parser import get_residues
 
-def compute_contactmap(file, model_id, chain_id, threshold, altloc="A", to_include=None, to_ignore=None):
+
+def compute_contactmap(
+        file,
+        model_id, chain_id,
+        threshold,
+        altloc="A",
+        to_include=None, to_ignore=None):
     """
     Matrix with the interaction network, or contact map, extracted
     from a PDb structure. The contact definition is purely geometric.

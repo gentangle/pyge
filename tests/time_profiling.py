@@ -9,8 +9,8 @@ parent_dir = Path(__file__).parent.resolve()
 def profileit(func):
     """
     Profile a function with this decorator
-
-    https://stackoverflow.com/questions/5375624/a-decorator-that-profiles-a-method-call-and-logs-the-profiling-result
+    https://stackoverflow.com/questions/5375624/
+    a-decorator-that-profiles-a-method-call-and-logs-the-profiling-result
     """
     def wrapper(*args, **kwargs):
         datafn = func.__name__ + ".profile" # Name the data file sensibly
