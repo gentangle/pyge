@@ -8,11 +8,20 @@ the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
 import re
+from typing import List
+from dataclasses import dataclass
 
 import MDAnalysis as mda
 
 from pyge import gent
 from pyge.contactmap.contactmap import compute_contactmap
+
+@dataclass
+class GEResult:
+    loop_thr_ge: List[List[List[int], List[int], float]]
+    ge_max: List[List[int], List[int], float]
+    ge_weighted: List[List[int], List[int], float]
+
 
 def _ca_from_topology(topology_file, selection_options):
     """
@@ -43,22 +52,88 @@ def _ca_from_topology(topology_file, selection_options):
     return ca_positions
 
 
-# TODO serve aggiungere dei test
 def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     """
-    TODO
+    Gaussian entanglement from a PDB file
 
-    If altloc is fixed in selection_option, then the keyword in parser_option is ignored for consistency
+    This function return a GEResult object containing the list
+    of Gaussian entanglements for each contact (a.k.a. loop), the maximum
+    Gaussian entanglement and the weighted Gaussian entanglement.
+    Starting from the PDB file.
 
-    example:
-    out = ge_from_pdb("1srl.pdb", ge_options={"thr_min_len":10,"loop_min_thr":0}, cm_options={"model_id":1, "chain_id":"A", "threshold":4.5, "to_ignore":["HOH"]})
+    This function uses the ATOM coordinates from the pdb file,
+    hence is responsibility of the user to check the correctness of the file.
+
+    The user control the GE calculation through the ge_options dictionary 
+    and the contacts calculation through the cm_options dictionary.
+    The `selection_options` is a string that is passed to the PDBParser
+    to select only certain atoms. Chain and model selection are controlled
+    through the cm_options dictionary.
+    The `altloc` option can be modified by the user through 
+    the `selection_options` and `cm_options` dictionary.
+    If so, the function will give priority to the `selection_options`.
+
+    Example:
+    ge_from_pdb(
+        "1srl.pdb",
+        ge_options={"thr_min_len":10, "loop_min_thr":0},
+        cm_options={
+            "model_id":1, "chain_id":"A", "threshold":4.5, "to_ignore":["HOH"]
+            }
+    )
+
+    Parameters
+    ----------
+    pdb_file : str or Path
+        path to PDB file
+    ge_options : Dict
+        Dictionary containing the options for the GE calculation.
+            thr_min_len : int
+                Minimum length of a thread
+            loop_min_len : int
+                Minimum length of a loop
+    cm_options : Dict
+        Dictionary containing the options for the contact map calculation.
+        Each contact defines a loop
+            model_id : int, optional
+                Model ID for the chain (default 1, used,
+                for example, for X-Ray structures)
+            chain_id : str, by default 'A'
+                Chain ID to select chain (auth_asym parameter in PDB)
+            threshold : float
+                Minimum distance for which two non-Hydrogen atoms are considered
+                in contact
+            to_include : List[str], optional
+                List of residue names to include when parsing the PDB
+            to_ignore : List[str], optional
+                List of residue names to ignore when parsing the PDB.
+                E.g. water (HOH), ions etc.
+    selection_options : str, optional
+        Selection grammar to select atoms from the PDB file.
+        See https://userguide.mdanalysis.org/stable/selections.html
+        for more details
+
+    Returns
+    -------
+    GEResult
+        Object containing the results of the GE calculation.
+        The object contains the following attributes:
+            loop_thr_ge : List[List[List[int], List[int], float]]
+                List of Gaussian entanglements for each contact (a.k.a. loop)
+                where the first list contains starting and finishing residue indexes
+                of the loop, the second list contains starting and finishing residue
+                of the thread (both starting from 0) and the float is the GE value.
+            ge_max : List[List[int], List[int], float]
+                Same structure as above for the maximum GE value of the whole chain
+            ge_weighted : List[List[int], List[int], float]
+                Same structure as above for the weighted GE of the whole chain
     """
-
     # Setup variables
     if "model_id" in cm_options:
         model_id = cm_options["model_id"]
     else:
-        raise ValueError("You must provide the keyword 'model_id'")
+        model_id = 1
+        print("WARNIGN: you did not provide the model_id, using the default value (1)")
     if "chain_id" in cm_options:
         chain_id = cm_options["chain_id"]
     else:
@@ -76,7 +151,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     else:
         to_ignore = None
 
-    # default altloc if not explicitated differently by the user
+    # default altloc if not modified by the user
     altloc = "A"
     if selection_options is not None:
         if "altloc" in selection_options:
@@ -118,7 +193,10 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         mode="weighted",
         kwards={"hill_coeff":3, "threshold":0.5})
 
-    return {"loop_thr_ge": ge_loops_result, "ge_max": ge_config_max, "ge_weighted": ge_config_w}
+    return GEResult(
+        loop_thr_ge=ge_loops_result, ge_max=ge_config_max, ge_weighted=ge_config_w
+    )
+
 
 # def singlechain(topology_file, contact_map, mode, loop_min_len=10, thr_min_len=10):
 #     """
