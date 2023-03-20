@@ -14,7 +14,7 @@ import logging
 import MDAnalysis as mda
 
 from pyge import gent
-from pyge.contacts import contacts_formed_cm
+from pyge.contacts import check_formed
 
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -80,7 +80,7 @@ def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params)
             # No AA information are filtered here
             ca_positions = universe.trajectory.ts.positions
 
-            contact_map_config = contacts_formed_cm(
+            contact_map_config = check_formed.cm_formed(
                 contacts_params["contact_map"], ca_positions, contacts_params["gamma"]
             )
             ge_loops_result = gent.ge_loops(
