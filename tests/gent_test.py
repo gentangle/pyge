@@ -35,10 +35,10 @@ def test_gaussian_entanglement():
 def test_ge_configuration():
     """Test the possible selections for the GE of the whole configuration."""
     ge_loops_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend="cython")
-    modes = ("max", "average")
+    modes = ("max", "weighted")
 
     for mode in modes:
-        ge_selected = gent.ge_configuration(ge_loops_computed, 10, mode)
+        ge_selected = gent.ge_configuration(ge_loops_computed, 0, mode)
         assert np.isclose(ge_selected[2], ge_1ucs_native_modes[mode], atol=0.0001)
         if mode == "max":
             assert ge_selected[0][0] == ge_1ucs_native_modes["max_loop"][0]
