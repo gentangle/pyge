@@ -49,7 +49,7 @@ jobs:
     # from https://github.com/codecov/codecov-action
     - name: Upload coverage to Codecov
       if: matrix.tox-envs == 'test'
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
         fail_ci_if_error: true

@@ -1,4 +1,5 @@
-"""
+"""GE for a trajectory.
+
 Module to contain functions used as addition layer to handle
 trajectory files, such as DCD files, and compute Gaussian Entanglements
 timeseries.
@@ -7,26 +8,28 @@ These functions do not provide tools to check the completeness and
 the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
+import sys
+import logging
+
 import MDAnalysis as mda
 
 from pyge import gent
 from pyge.contacts import contacts_formed_cm
 
 
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+
+
 def _object_from_trajectory(topology_file, trajectory_file):
-    """
-    Create a MDAnalysis.core.Universe object ot handle the trajectory files
-    """
-    print("WARNING: pyge assumes that the trajectory is for a CG chain\n")
+    """Create a MDAnalysis.core.Universe object ot handle the trajectory files."""
+    logging.warning("WARNING: pyge assumes that the trajectory is for a CG chain\n")
     # In future releases, this function is supposed to handle
     # AA trajectory and extract only the alpha carbon chain
     return mda.Universe(str(topology_file), str(trajectory_file))
 
 
 def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params):
-    """
-    Compute the Gaussian Entanglement for all loops or the whole configurations
-    of single polypeptide trajectory.
+    """GE for all loops or the whole configurations of single chain trajectory.
 
     The use case is to provide a topology and a trajectory file output of a simulation
     of a coarse-grained polypeptide chain.

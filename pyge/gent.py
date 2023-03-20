@@ -1,5 +1,4 @@
-"""
-Core functions to compute the Gaussian Entanglement
+"""Core functions to compute the Gaussian Entanglement.
 
 Functions to analyze topological complexes in protein configurations
 through the Gaussian Entanglement as defined in:
@@ -18,7 +17,8 @@ mode_allowed = ("max", "average", "weighted")
 
 
 def _loop_list(contact_map):
-    """
+    """List of loops indexes.
+
     Return list of two numbers, each defining the beginning and the
     end of a loop in a single polypeptide chain
 
@@ -42,20 +42,21 @@ def _loop_list(contact_map):
 
 
 def _midposition_vectors(bead_position):
-    """Computes R vectors for GE calculation, i.e. bead positions"""
+    """Compute R vectors for GE calculation, i.e. bead positions."""
     return ((bead_position[1:] + bead_position[:-1]) / 2).astype(float)
 
 
 def _bond_vectors(bead_position):
-    """Computes DeltaR for GE calculation, i.e. bond vectors"""
+    """Compute DeltaR for GE calculation, i.e. bond vectors."""
     return (bead_position[1:] - bead_position[:-1]).astype(float)
 
 
 @njit
 def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
-    """
-    G' for loop starting from residue i1 to i2 and
-    thread starting from residue j1 to j2
+    """G' one loop.
+    
+    Gaussian entanglement for one loop starting from residue i1 to i2 and
+    thread starting from residue j1 to j2.
 
     Pure python implementation of the corresponding cython function
     See gaussian_entanglement.computeGE() for more info
@@ -67,12 +68,11 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
     gauss = 0
     # in baiesi2019 paper is loop1-1, but range already stops at loop1-1
     for i in range(loop0, loop1):
-
         dR = positions[i] - positions[thr0:thr1]
         ddR = np.cross(bonds[i], bonds[thr0:thr1])
         gauss += np.sum(
-            np.sum((dR * ddR), axis=1)
-            / np.power(np.sum(dR**2, axis=1), 3 / 2)  # dR*ddR shape = (10, 3)
+            np.sum((dR * ddR), axis=1) / np.power(np.sum(dR**2, axis=1), 3 / 2)
+            # dR*ddR shape = (10, 3)
         )
 
         # Readable but slow for loop
@@ -86,7 +86,7 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
 
 def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     """
-    Compute G' for all loops, i.e. contacts, in a single polypeptide chain
+    Compute G' for all loops, i.e. contacts, in a single polypeptide chain.
 
     Parameters
     ---------
@@ -102,7 +102,7 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
         backend : str
             Specifies the backend for the GE calculation.
             Possible values: 'numpy', 'cython'.
-            By default, 'cython'
+            By default, 'cython'ca_posistions
 
     Returns
     -------
@@ -161,8 +161,8 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
 
 
 def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
-    """
-    Returns the GE of a chain and the corresponding loop-thread.
+    """GE of a chain configuration with corresponding loop-thread.
+    
     The user can chose the mode use to select the Gaussian Entanglement
     for the whole configuration
 
@@ -183,7 +183,8 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
             exponent : float
                 exponent to which the absolute value of G' is elevated
 
-    Returns:
+    Returns
+    ---------
         out : Tuple[Tuple[int,int], Tuple[int,int], float]
             Structure: ( (loop start, loop end), (thr start, thr end), GE value )
             It returns None if no loop is found satisfying the m0 threshold.

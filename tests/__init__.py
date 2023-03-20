@@ -1,1 +1,1 @@
-"""Test suite for pyge"""
+"""Test suite for pyge."""

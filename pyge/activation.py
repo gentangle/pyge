@@ -1,12 +1,10 @@
-"""
-Set of activation functions
-"""
+"""Set of activation functions."""
 import numpy as np
 
 
 def hill_fun(inp, threshold: float, hill_coeff: float) -> np.ndarray:
     """
-    Hill function
+    Hill function.
 
     Parameters
     ----------

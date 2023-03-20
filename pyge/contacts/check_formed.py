@@ -1,4 +1,4 @@
-"""Module with functions used to compute formed contacts during a trajectory"""
+"""Module with functions used to check formed contacts during a trajectory."""
 import numpy as np
 from MDAnalysis.analysis import distances
 
@@ -6,8 +6,9 @@ from MDAnalysis.analysis import distances
 # because more then half of it is empty
 
 
-def contacts_formed_cm(contact_map_native, ca_posistions, gamma):
-    """
+def cm_formed(contact_map_native, ca_positions, gamma):
+    """Contact map from native one and C alpha positions.
+
     Compute a contact map for the configuration stored in ca_positions.
     This function takes as a reference the native contact map and returns
     a boolean array in which an entry is True (hence, the contact is formed
@@ -40,7 +41,7 @@ def contacts_formed_cm(contact_map_native, ca_posistions, gamma):
     n_residues = contact_map_native.shape[0]
 
     # Compute distance matrix
-    self_distances = distances.self_distance_array(ca_posistions)
+    self_distances = distances.self_distance_array(ca_positions)
     sq_dist_arr = np.zeros((n_residues, n_residues))
     triu = np.triu_indices_from(sq_dist_arr, k=1)
     sq_dist_arr[triu] = self_distances
