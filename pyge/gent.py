@@ -8,8 +8,9 @@ through the Gaussian Entanglement as defined in:
 import numpy as np
 from numba import njit
 
-from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
 from pyge.activation import hill_fun
+from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
+
 
 # Global parameters
 back_allowed = ("numpy", "cython")

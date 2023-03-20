@@ -6,6 +6,7 @@ import numpy as np
 
 from pyge import trajectory
 
+
 parent = pathlib.Path(__file__).parent.resolve()
 contact_map_native = np.load(parent / "data" / "1ucs_cm.npy")
 with open(parent / "data/1ucs_ge_traj.json", "r", encoding="utf-8") as fin:

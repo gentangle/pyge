@@ -1,11 +1,11 @@
 """Test for the gent module."""
-import pathlib
-import logging
-import sys
 import json
+import logging
+import pathlib
+import sys
 
-import numpy as np
 import MDAnalysis as mda
+import numpy as np
 
 from pyge import gent
 

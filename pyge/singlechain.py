@@ -9,10 +9,10 @@ the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
 import logging
-import sys
 import re
-from typing import List, Union
+import sys
 from dataclasses import dataclass
+from typing import List, Union
 
 import MDAnalysis as mda
 
