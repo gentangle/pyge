@@ -5,6 +5,9 @@ through the Gaussian Entanglement as defined in:
 - Baiesi et al. Sci. Rep. (2016)
 - Baiesi et al. Sci. Rep. (2019)
 """
+from dataclasses import dataclass
+from typing import List
+
 import numpy as np
 from numba import njit
 
@@ -55,7 +58,7 @@ def _bond_vectors(bead_position):
 @njit
 def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
     """G' one loop.
-    
+
     Gaussian entanglement for one loop starting from residue i1 to i2 and
     thread starting from residue j1 to j2.
 
@@ -85,6 +88,38 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
     return gauss / (4 * np.pi)
 
 
+@dataclass
+class GE:
+    """Base object to save results of a GE calculation.
+
+    Attributes
+    ----------
+        loop: List[int]
+            list of two indexes referring to the starting
+            (starting from 0 and the N terminal) and ending
+            residues of the loop.
+            Practically, those that are in contact.
+        thread: List[int]
+            As above, two indexes describing the starting and
+            ending residues of the thread.
+        value: float
+            Gaussian entanglement value for that loop and thread.
+            Corresponding to the maximum modulus among all threads
+    """
+
+    loop: List[int]
+    thread: List[int]
+    value: float
+
+
+@dataclass
+class GETermini:
+    """Store GE result for the N and the C terminus."""
+
+    n_term: GE
+    c_term: GE
+
+
 def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain.
@@ -93,23 +128,21 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     ---------
         contact_map : array_like
             2D numpy array, contact map
-        contact_map : array_like
+        bead_position : array_like
             2D numpy array: list of the 3 dimensional position for
-            each C_alpha (or residue in coarse-grained fashion)
+            each C_alpha (or residue in coarse-grained fashion).
+            Assumed to be ordered from N to C terminus (as the contact_map).
         thr_min_len : int
             Let i and j be indexes for the thread;
             Then this argument set the condition:
                 |j-i| =>  thr_min_len
-        backend : str
+        backend : str, default, 'cython'
             Specifies the backend for the GE calculation.
             Possible values: 'numpy', 'cython'.
-            By default, 'cython'ca_posistions
 
     Returns
     -------
-        result : List[Tuple[Tuple[int,int], Tuple[int,int], float]]
-            list of N by 3 elements: first is a tuple characterizing the loop,
-            the second related to the thread and the last one is the GE value associated
+        result : List[GETermini]
     """
     if backend == back_allowed[0]:
         # Numpy
@@ -134,36 +167,51 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
         i1 = loop[0]
         i2 = loop[1]
 
-        GE_max = 0
-        j1_max = 0
-        j2_max = 0
-        # search before the loop
+        GE_max_n = 0
+        j1_max_n = 0
+        j2_max_n = 0
+        GE_max_c = 0
+        j1_max_c = 0
+        j2_max_c = 0
+        # Search before the loop: N terminus
         for j1 in range(i1 - thr_min_len):
             for increment in range(i1 - thr_min_len - j1):
                 j2 = j1 + thr_min_len + increment
                 GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
-                if abs(GE_loop) > abs(GE_max):
-                    GE_max = GE_loop
-                    j1_max = j1
-                    j2_max = j2
+                if abs(GE_loop) > abs(GE_max_n):
+                    GE_max_n = GE_loop
+                    j1_max_n = j1
+                    j2_max_n = j2
         # search after the loop
         for j1 in range(i2 + 1, len_chain_1 - thr_min_len):
             for increment in range(len_chain_1 - thr_min_len - j1):
                 j2 = j1 + thr_min_len + increment
                 GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
-                if abs(GE_loop) > abs(GE_max):
-                    GE_max = GE_loop
-                    j1_max = j1
-                    j2_max = j2
+                if abs(GE_loop) > abs(GE_max_c):
+                    GE_max_c = GE_loop
+                    j1_max_c = j1
+                    j2_max_c = j2
         # loop's GE is the maximum in modulus
-        result.append(((i1, i2), (j1_max, j2_max), GE_max))
-
+        result.append(
+            GETermini(
+                n_term=GE(loop=(i1, i2), thread=(j1_max_n, j2_max_n), value=GE_max_n),
+                c_term=GE(loop=(i1, i2), thread=(j1_max_c, j2_max_c), value=GE_max_c),
+            )
+        )
     return result
+
+
+def _max_between_termini(ge_termini):
+    """Max between GE of the N and C terminus."""
+    if abs(ge_termini.n_term.value) >= abs(ge_termini.c_term.value):
+        return ge_termini.n_term
+    else:
+        return ge_termini.c_term
 
 
 def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
     r"""GE of a chain configuration with corresponding loop-thread.
-    
+
     The user can chose the mode use to select the Gaussian Entanglement
     for the whole configuration.
     max:
@@ -179,9 +227,8 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
 
     Parameters
     ---------
-        ge_list_complete : see output ge_loops
-            List of n by 3 elements with information about loops, threads and
-            G' values
+        ge_list_complete : List[GETermini]
+            Output of gent.ge_loops
         loop_min_len : int
             Let i and j be indexes for the thread;
             Then this argument set the condition:
@@ -199,8 +246,8 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
 
     Returns
     ---------
-        out : List[List[int,int], List[int,int], float]
-            Structure: ( (loop start, loop end), (thr start, thr end), GE value )
+        out : GE
+            GE object.
             It returns None if no loop is found satisfying the m0 threshold.
             For the weighted case, the loop and the thread are set to None
     """
@@ -221,19 +268,20 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
             f"Mode {mode} not valid, use one of the following: {mode_allowed}"
         )
 
+    ge_list_single_terminus = [_max_between_termini(x) for x in ge_list_complete]
     ge_loop_filtered = [
-        x for x in ge_list_complete if x[0][1] - x[0][0] >= loop_min_len
+        x for x in ge_list_single_terminus if x.loop[1] - x.loop[0] >= loop_min_len
     ]
     if len(ge_loop_filtered) == 0:
         return None
-    ge_values = [ge[2] for ge in ge_loop_filtered]
+    ge_values = [ge.value for ge in ge_loop_filtered]
 
     if mode == mode_allowed[0]:
         ge_selected = fun_selection(ge_values, **params)
-        loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
-        thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
+        loop = ge_loop_filtered[ge_values.index(ge_selected)].loop
+        thread = ge_loop_filtered[ge_values.index(ge_selected)].thread
     elif mode == mode_allowed[1]:
         weights = activation_function(np.abs(ge_values), **activation_params)
         ge_selected = np.sum(weights * ge_values) / np.sum(weights)
 
-    return (loop, thread, ge_selected)
+    return GE(loop=loop, thread=thread, value=ge_selected)

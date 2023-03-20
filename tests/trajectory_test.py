@@ -31,8 +31,8 @@ def test_trajectory():
 
     assert len(ge_ts) == len(ge_1ucs_traj["results"])
     for ge, ge_res in zip(ge_ts, ge_1ucs_traj["results"]):
-        assert ge[2] == ge_res[2]
-        assert ge[0][0] == ge_res[0][0]
-        assert ge[0][1] == ge_res[0][1]
-        assert ge[1][0] == ge_res[1][0]
-        assert ge[1][1] == ge_res[1][1]
+        assert ge.value == ge_res[2]
+        assert ge.loop[0] == ge_res[0][0]
+        assert ge.loop[1] == ge_res[0][1]
+        assert ge.thread[0] == ge_res[1][0]
+        assert ge.thread[1] == ge_res[1][1]

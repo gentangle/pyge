@@ -12,24 +12,25 @@ import logging
 import re
 import sys
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 import MDAnalysis as mda
 
 from pyge import gent
 from pyge.contacts.contactmap import compute_contactmap
+from pyge.gent import GE, GETermini
 
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 @dataclass
-class GEResult:
-    """Object to store results of the GE calculation."""
+class GEChain:
+    """Complete GE result for a single chain."""
 
-    loop_thr_ge: List[List[Union[List[int], List[int], float]]]
-    ge_max: List[Union[List[int], List[int], float]]
-    ge_weighted: List[Union[List[int], List[int], float]]
+    loops: List[GETermini]
+    global_max: GE
+    global_weighted: GE
 
 
 def _ca_from_topology(topology_file, selection_options):
@@ -123,17 +124,17 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
 
     Returns
     -------
-    GEResult
+    GEChain
         Object containing the results of the GE calculation.
         The object contains the following attributes:
-            loop_thr_ge : List[List[List[int], List[int], float]]
+            loops : List[GETermini]
                 List of Gaussian entanglements for each contact (a.k.a. loop)
                 where the first list contains starting and finishing residue indexes
                 of the loop, the second list contains starting and finishing residue
                 of the thread (both starting from 0) and the float is the GE value.
-            ge_max : List[List[int], List[int], float]
+            global_max : GE
                 Same structure as above for the maximum GE value of the whole chain
-            ge_weighted : List[List[int], List[int], float]
+            global_weighted : GE
                 Same structure as above for the weighted GE of the whole chain
     """
     # Setup variables
@@ -208,8 +209,8 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         kwards={"hill_coeff": 3, "threshold": 0.5},
     )
 
-    return GEResult(
-        loop_thr_ge=ge_loops_result, ge_max=ge_config_max, ge_weighted=ge_config_w
+    return GEChain(
+        loops=ge_loops_result, global_max=ge_config_max, global_weighted=ge_config_w
     )
 
 
