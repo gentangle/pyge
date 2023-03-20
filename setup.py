@@ -61,7 +61,7 @@ setup(
         "Discussion Forum": "https://github.com/loscati/pyge/discussions",
     },
     keywords=["bioinformatics", "topology", "entanglement"],
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     install_requires=[
         # https://stackoverflow.com/questions/14399534
         "cython",
