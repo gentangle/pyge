@@ -2,6 +2,7 @@
 import numpy as np
 from MDAnalysis.analysis import distances
 
+
 # TODO: optimize this computation: I think is unnecessary to loop over the entire matrix
 # because more then half of it is empty
 

@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* Integrate the computation of GE weighted (see publication) into the main function in `gent`
+
 v0.4.0 (2023-03-20)
 ------------------------------------------------------------
 

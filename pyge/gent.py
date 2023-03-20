@@ -8,12 +8,13 @@ through the Gaussian Entanglement as defined in:
 import numpy as np
 from numba import njit
 
-from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
 from pyge.activation import hill_fun
+from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
+
 
 # Global parameters
 back_allowed = ("numpy", "cython")
-mode_allowed = ("max", "average", "weighted")
+mode_allowed = ("max", "weighted")
 
 
 def _loop_list(contact_map):
@@ -161,10 +162,20 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
 
 
 def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
-    """GE of a chain configuration with corresponding loop-thread.
+    r"""GE of a chain configuration with corresponding loop-thread.
     
     The user can chose the mode use to select the Gaussian Entanglement
-    for the whole configuration
+    for the whole configuration.
+    max:
+        Return the GE that maximize the absolute value for all GE.
+        Returning the corresponding loop and thread.
+    weighted:
+        Return a weighted average of the GE for all loops, where the
+        weights are computed using an hill function of the absolute
+        value of the GE. The equation is:
+            \sum_{i,j \in C} G^\prime (i,j)
+            \frac{f(|G^\prime| | g_0, w)}{\sum_{i,j \in C} f(|G^\prime| | g_0, w)}
+        where C is the set of formed native contacts.
 
     Parameters
     ---------
@@ -175,32 +186,29 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
             Let i and j be indexes for the thread;
             Then this argument set the condition:
                 |j-i| =>  loop_min_len
-        mode : str
+        mode : str, default, 'max'
             how to select the G' for the whole configuration.
-            The possible ones are: 'max', 'average' or 'weighted'
-            By default, 'max'
+            The possible ones are: 'max' or 'weighted'
         kwargs:
-            exponent : float
-                exponent to which the absolute value of G' is elevated
+            activation_params : dict, optional
+                Parameters passed to the activation Hill function.
+                threshold : float, default 0.5
+                    g_0 parameter
+                hill_coeff : float, default 3.0
+                    Exponent of the Hill function
 
     Returns
     ---------
-        out : Tuple[Tuple[int,int], Tuple[int,int], float]
+        out : List[List[int,int], List[int,int], float]
             Structure: ( (loop start, loop end), (thr start, thr end), GE value )
             It returns None if no loop is found satisfying the m0 threshold.
-            For the average case, the loop and the thread are None objects
+            For the weighted case, the loop and the thread are set to None
     """
     if mode == mode_allowed[0]:
         # Maximum
         fun_selection = max
         params = {"key": abs}
     elif mode == mode_allowed[1]:
-        # Average
-        fun_selection = np.average
-        params = {}
-        # there is no loop or thread associated to the average value
-        loop, thread = None, None
-    elif mode == mode_allowed[2]:
         activation_function = hill_fun
         # get exponent if present, otherwise set it to 3 (see salicari2023)
         hill_coeff = kwards.get("hill_coeff", 3)
@@ -220,13 +228,12 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
         return None
     ge_values = [ge[2] for ge in ge_loop_filtered]
 
-    if mode == mode_allowed[2]:
+    if mode == mode_allowed[0]:
+        ge_selected = fun_selection(ge_values, **params)
+        loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
+        thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
+    elif mode == mode_allowed[1]:
         weights = activation_function(np.abs(ge_values), **activation_params)
         ge_selected = np.sum(weights * ge_values) / np.sum(weights)
-    else:
-        ge_selected = fun_selection(ge_values, **params)
-        if mode == mode_allowed[0]:
-            loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
-            thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
 
     return (loop, thread, ge_selected)

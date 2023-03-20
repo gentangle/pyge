@@ -1,7 +1,7 @@
 """Parser to load residue list from PDB."""
 import logging
-from typing import List
 import sys
+from typing import List
 
 import Bio.PDB as pdb
 
