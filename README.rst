@@ -123,7 +123,7 @@ PYGE
 Version
 -------
 
-v0.2.0
+v0.3.0
 
 .. .. _GitHub Actions: https://github.com/features/actions
 .. .. _PyPI: https://pypi.org
