@@ -1,18 +1,17 @@
-"""Compute and draw the interaction matrix, or contact map from a PDB structure"""
+"""Compute and draw the interaction matrix, or contact map from a PDB structure."""
 import numpy as np
 
-from pyge.contactmap.pdb_parser import get_residues
+from pyge.contacts.pdb_parser import get_residues
 
 
 def compute_contactmap(
     file, model_id, chain_id, threshold, altloc="A", to_include=None, to_ignore=None
 ):
-    """
-    Matrix with the interaction network, or contact map, extracted
-    from a PDb structure. The contact definition is purely geometric.
+    """Contact map extracted from a PDB structure.
+
+    The contact definition is purely geometric.
     Two residues are said to be in contact if at least one pair of
     non-hydrogen atoms is spatially closer than the threshold.
-
     The matrix entry is the distance between the alpha carbons of the
     respective residues.
 

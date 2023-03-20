@@ -1,16 +1,21 @@
-"""Parser to load residue list from PDB"""
+"""Parser to load residue list from PDB."""
+import logging
 from typing import List
+import sys
 
 import Bio.PDB as pdb
 
-from pyge.contactmap.protein_letters import protein_letters_3to1
+from pyge.contacts.protein_letters import protein_letters_3to1
+
+
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 def get_residues(
     file, model_id, chain_id, to_include=None, to_ignore=None, debug=False
 ) -> List[pdb.Residue.Residue]:
-    """
-    List of Residue objects read from a PDB file
+    """List of Residue objects read from a PDB file.
+
     This function parse only standard amino acids as specified in the
     protein_letters.py. If the user does not specifies exceptions
     to this rule, a RuntimeError is raised.
@@ -79,7 +84,7 @@ def get_residues(
 
         elif residue.get_resname() in to_include:
             if debug:
-                print(
+                logging.debug(
                     (
                         f"Residue {residue.get_resname()} with resID {residue.id[1]} "
                         "has been INCLUDED because specified "
@@ -90,7 +95,7 @@ def get_residues(
 
         elif residue.get_resname() in to_ignore:
             if debug:
-                print(
+                logging.debug(
                     (
                         f"Residue {residue.get_resname()} with resID {residue.id[1]} "
                         "has been EXCLUDED because specified "

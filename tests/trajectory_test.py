@@ -1,3 +1,4 @@
+"""Test functions for the trajectory module."""
 import json
 import pathlib
 
@@ -10,8 +11,9 @@ contact_map_native = np.load(parent / "data" / "1ucs_cm.npy")
 with open(parent / "data/1ucs_ge_traj.json", "r", encoding="utf-8") as fin:
     ge_1ucs_traj = json.load(fin)
 
+
 def test_trajectory():
-    """Test for the trajectory module"""
+    """Test for the trajectory module."""
     # preparing the mask to select the configuration to test
     mask = np.zeros(41667)
     mask[0] = 1
@@ -23,7 +25,8 @@ def test_trajectory():
         parent / "data" / "1ucs_traj.dcd",
         mask,
         {"thr_min_len": 10, "whole_config": True, "loop_min_len": 10, "mode": "max"},
-        {"contact_map": contact_map_native ,"gamma": 1.2})
+        {"contact_map": contact_map_native, "gamma": 1.2},
+    )
 
     assert len(ge_ts) == len(ge_1ucs_traj["results"])
     for ge, ge_res in zip(ge_ts, ge_1ucs_traj["results"]):

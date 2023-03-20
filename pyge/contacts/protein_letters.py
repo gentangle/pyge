@@ -1,4 +1,5 @@
-"""
+"""Standard protein letter codes.
+
 File forked and adapted from the 1.79 version of
 Biopython.Bio.Data.IUPACData
 """

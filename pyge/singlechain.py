@@ -1,4 +1,5 @@
-"""
+"""GE for a single chain.
+
 Module to contain functions used as addition layer to handle
 topology files, such as PDBs, and compute Gaussian Entanglements
 of single structures.
@@ -7,6 +8,8 @@ These functions do not provide tools to check the completeness and
 the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
+import logging
+import sys
 import re
 from typing import List, Union
 from dataclasses import dataclass
@@ -14,19 +17,23 @@ from dataclasses import dataclass
 import MDAnalysis as mda
 
 from pyge import gent
-from pyge.contactmap.contactmap import compute_contactmap
+from pyge.contacts.contactmap import compute_contactmap
+
+
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 @dataclass
 class GEResult:
+    """Object to store results of the GE calculation."""
+
     loop_thr_ge: List[List[Union[List[int], List[int], float]]]
     ge_max: List[Union[List[int], List[int], float]]
     ge_weighted: List[Union[List[int], List[int], float]]
 
 
 def _ca_from_topology(topology_file, selection_options):
-    """
-    CA position vectors from the PDB (topology) file
+    """CA position vectors from the PDB (topology) file.
 
     Parameters
     ----------
@@ -49,13 +56,12 @@ def _ca_from_topology(topology_file, selection_options):
     ca_positions = universe.select_atoms("name CA" + selection_options).positions
     # TODO: for now the function prints the number of CAs
     # with the aim that the user check if the selection is correct
-    print(f"Number of CA atoms selected: {len(ca_positions)}")
+    logging.debug(f"Number of CA atoms selected: {len(ca_positions)}")
     return ca_positions
 
 
 def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
-    """
-    Gaussian entanglement from a PDB file
+    """Gaussian entanglement from a PDB file.
 
     This function return a GEResult object containing the list
     of Gaussian entanglements for each contact (a.k.a. loop), the maximum
@@ -135,7 +141,9 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         model_id = cm_options["model_id"]
     else:
         model_id = 1
-        print("WARNIGN: you did not provide the model_id, using the default value (1)")
+        logging.warning(
+            "WARNING: you did not provide the model_id, using the default value (1)"
+        )
     if "chain_id" in cm_options:
         chain_id = cm_options["chain_id"]
     else:
