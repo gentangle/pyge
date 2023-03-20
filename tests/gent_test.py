@@ -29,11 +29,11 @@ def test_gaussian_entanglement():
     ge_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend="cython")
 
     for ge_comp, ge_exp in zip(ge_computed, ge_1ucs_native):
-        if abs(ge_comp.n_term[2]) >= abs(ge_comp.c_term[2]):
+        if abs(ge_comp.n_term.value) >= abs(ge_comp.c_term.value):
             ge2com = ge_comp.n_term
         else:
             ge2com = ge_comp.c_term
-        assert np.isclose(ge2com[2], ge_exp[2]), logging.warning(ge2com, ge_exp)
+        assert np.isclose(ge2com.value, ge_exp[2]), logging.warning(ge2com, ge_exp)
 
 
 def test_ge_configuration():
@@ -43,9 +43,9 @@ def test_ge_configuration():
 
     for mode in modes:
         ge_selected = gent.ge_configuration(ge_loops_computed, 0, mode)
-        assert np.isclose(ge_selected[2], ge_1ucs_native_modes[mode], atol=0.0001)
+        assert np.isclose(ge_selected.value, ge_1ucs_native_modes[mode], atol=0.0001)
         if mode == "max":
-            assert ge_selected[0][0] == ge_1ucs_native_modes["max_loop"][0]
-            assert ge_selected[0][1] == ge_1ucs_native_modes["max_loop"][1]
-            assert ge_selected[1][0] == ge_1ucs_native_modes["max_thr"][0]
-            assert ge_selected[1][1] == ge_1ucs_native_modes["max_thr"][1]
+            assert ge_selected.loop[0] == ge_1ucs_native_modes["max_loop"][0]
+            assert ge_selected.loop[1] == ge_1ucs_native_modes["max_loop"][1]
+            assert ge_selected.thread[0] == ge_1ucs_native_modes["max_thr"][0]
+            assert ge_selected.thread[1] == ge_1ucs_native_modes["max_thr"][1]

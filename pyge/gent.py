@@ -201,6 +201,14 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     return result
 
 
+def _max_between_termini(ge_termini):
+    """Max between GE of the N and C terminus."""
+    if abs(ge_termini.n_term.value) >= abs(ge_termini.c_term.value):
+        return ge_termini.n_term
+    else:
+        return ge_termini.c_term
+
+
 def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
     r"""GE of a chain configuration with corresponding loop-thread.
 
@@ -238,8 +246,8 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
 
     Returns
     ---------
-        out : List[List[int,int], List[int,int], float]
-            Structure: ( (loop start, loop end), (thr start, thr end), GE value )
+        out : GE
+            GE object.
             It returns None if no loop is found satisfying the m0 threshold.
             For the weighted case, the loop and the thread are set to None
     """
@@ -260,19 +268,20 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
             f"Mode {mode} not valid, use one of the following: {mode_allowed}"
         )
 
+    ge_list_single_terminus = [_max_between_termini(x) for x in ge_list_complete]
     ge_loop_filtered = [
-        x for x in ge_list_complete if x[0][1] - x[0][0] >= loop_min_len
+        x for x in ge_list_single_terminus if x.loop[1] - x.loop[0] >= loop_min_len
     ]
     if len(ge_loop_filtered) == 0:
         return None
-    ge_values = [ge[2] for ge in ge_loop_filtered]
+    ge_values = [ge.value for ge in ge_loop_filtered]
 
     if mode == mode_allowed[0]:
         ge_selected = fun_selection(ge_values, **params)
-        loop = ge_loop_filtered[ge_values.index(ge_selected)][0]
-        thread = ge_loop_filtered[ge_values.index(ge_selected)][1]
+        loop = ge_loop_filtered[ge_values.index(ge_selected)].loop
+        thread = ge_loop_filtered[ge_values.index(ge_selected)].thread
     elif mode == mode_allowed[1]:
         weights = activation_function(np.abs(ge_values), **activation_params)
         ge_selected = np.sum(weights * ge_values) / np.sum(weights)
 
-    return (loop, thread, ge_selected)
+    return GE(loop=loop, thread=thread, value=ge_selected)
