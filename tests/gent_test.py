@@ -28,8 +28,12 @@ def test_gaussian_entanglement():
     """Testing the gaussian entanglement calculation for all possible loops."""
     ge_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend="cython")
 
-    for ge_c, ge_true in zip(ge_computed, ge_1ucs_native):
-        assert np.isclose(ge_c[2], ge_true[2]), logging.warning(ge_c, ge_true)
+    for ge_comp, ge_exp in zip(ge_computed, ge_1ucs_native):
+        if abs(ge_comp.n_term[2]) >= abs(ge_comp.c_term[2]):
+            ge2com = ge_comp.n_term
+        else:
+            ge2com = ge_comp.c_term
+        assert np.isclose(ge2com[2], ge_exp[2]), logging.warning(ge2com, ge_exp)
 
 
 def test_ge_configuration():
