@@ -14,7 +14,14 @@ import numpy as np
 
 from pyge.activation import hill_fun
 
-def qentangled(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fun=hill_fun, activation_params=None) -> float:
+
+def qentangled(
+    contact_thr_ge_list,
+    min_loop_len=0,
+    min_thr_len=0,
+    activation_fun=hill_fun,
+    activation_params=None,
+) -> float:
     r"""
     Compute the fraction of entangled contacts defined as:
         \frac{1}{N} \sum_{formed contacts} \sgn (G') f( |G'| )
@@ -45,15 +52,22 @@ def qentangled(contact_thr_ge_list, min_loop_len=0, min_thr_len=0, activation_fu
         Fraction of entangled contacts
     """
     if activation_params is None:
-        activation_params = {"threshold":0.7, "hill_coeff":4}
+        activation_params = {"threshold": 0.7, "hill_coeff": 4}
 
     # extract ge filtering wrt loop len. Default is no filtering
     ge_array = np.array(
-        [x[2] for x in contact_thr_ge_list if (x[0][1]-x[0][0] >= min_loop_len) and (x[1][1]-x[1][0] >= min_thr_len)]
+        [
+            x[2]
+            for x in contact_thr_ge_list
+            if (x[0][1] - x[0][0] >= min_loop_len)
+            and (x[1][1] - x[1][0] >= min_thr_len)
+        ]
     )
 
     # np.sign -> 0 if the argument is 0. Ok because otherwise the
     # activation function would be 0 (and it is test to be in this way)
     # Moreover, the activation function takes as input the abs of G'
-    integrand = np.sign(ge_array)*activation_fun(np.abs(ge_array), **activation_params)
+    integrand = np.sign(ge_array) * activation_fun(
+        np.abs(ge_array), **activation_params
+    )
     return np.average(integrand)
