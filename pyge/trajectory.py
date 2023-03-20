@@ -64,10 +64,10 @@ def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params)
 
     Return
     ------
-        ge_timeseries : see below
-            If ge_params['whole_config'] is True,
-            see gent.ge_configuration for more details.
-            Otherwise see gent.ge_loops
+        ge_timeseries : List[GETermini] or List[GE]
+            If ge_params['whole_config'] is True, then only
+            info about the global GE is saved (List[GE]).
+            Otherwise, all info are kept (List[GETermini]).
     """
     universe = _object_from_trajectory(topology_file, trajectory_file)
 
