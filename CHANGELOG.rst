@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* Implement three new objects to store GE calculations: `GE`, `GETermini` and `GEChain`. `GE` collects the loop, the thread and the GE value of a loop calculation. `GETermini` object contains the `GE`` for the N- and C-threads. `GEChain` collects the output of `pyge.singlechain.singlechain`
+
 v0.5.0 (2023-03-20)
 ------------------------------------------------------------
 
