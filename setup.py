@@ -5,11 +5,11 @@ from __future__ import absolute_import, print_function
 
 import os
 from glob import glob
-from os.path import dirname, join, splitext, relpath
+from os.path import dirname, join, relpath, splitext
 
-from setuptools import setup, find_packages
-from setuptools.extension import Extension
 from Cython.Build import cythonize
+from setuptools import find_packages, setup
+from setuptools.extension import Extension
 
 
 def read(*names, **kwargs):
