@@ -30,7 +30,7 @@ jobs:
       run: |
         git config user.name "loscati"
         git config user.email 'loscati@users.noreply.github.com'
-        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
         git checkout "${GITHUB_REF:11}"
 
     - name: Setup env variables
@@ -82,4 +82,5 @@ jobs:
         # note that here testpypi is used instead of the main pypi
         # because this is a test project
         # read more at: https://packaging.python.org/tutorials/packaging-projects/
-        twine upload --repository testpypi dist/*
+        # The following has to be uncomment once we have a pypi project
+        # twine upload --repository testpypi dist/*
