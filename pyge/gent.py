@@ -6,7 +6,7 @@ through the Gaussian Entanglement as defined in:
 - Baiesi et al. Sci. Rep. (2019)
 """
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
 import numpy as np
 from numba import njit
@@ -94,15 +94,15 @@ class GE:
 
     Attributes
     ----------
-        loop:
+        loop: List[int]
             list of two indexes referring to the starting
             (starting from 0 and the N terminal) and ending
             residues of the loop.
             Practically, those that are in contact.
-        thread:
+        thread: List[int]
             As above, two indexes describing the starting and
             ending residues of the thread.
-        value:
+        value: float
             Gaussian entanglement value for that loop and thread.
             Corresponding to the maximum modulus among all threads
     """
@@ -116,8 +116,8 @@ class GE:
 class GETermini:
     """Store GE result for the N and the C terminus."""
 
-    n_term: List[GE]
-    c_term: List[GE]
+    n_term: GE
+    c_term: GE
 
 
 def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
@@ -142,9 +142,7 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
 
     Returns
     -------
-        result : List[Tuple[Tuple[int,int], Tuple[int,int], float]]
-            list of N by 3 elements: first is a tuple characterizing the loop,
-            the second related to the thread and the last one is the GE value associated
+        result : List[GETermini]
     """
     if backend == back_allowed[0]:
         # Numpy
@@ -205,7 +203,7 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
 
 def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
     r"""GE of a chain configuration with corresponding loop-thread.
-    
+
     The user can chose the mode use to select the Gaussian Entanglement
     for the whole configuration.
     max:
@@ -221,9 +219,8 @@ def ge_configuration(ge_list_complete, loop_min_len, mode="max", **kwards):
 
     Parameters
     ---------
-        ge_list_complete : see output ge_loops
-            List of n by 3 elements with information about loops, threads and
-            G' values
+        ge_list_complete : List[GETermini]
+            Output of gent.ge_loops
         loop_min_len : int
             Let i and j be indexes for the thread;
             Then this argument set the condition:
