@@ -153,12 +153,14 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     else:
         raise ValueError(f"Backend not valid, use one of the following: {back_allowed}")
 
-    len_chain_1 = bead_position.shape[0]  # len chain - 1
+    len_chain = bead_position.shape[0]
+    if contact_map.shape[0] != len_chain:
+        raise ValueError("Contact map and bead position have different length")
     loops = _loop_list(contact_map)
     # note: first index is 0
     # note: second index > first index, for construction
 
-    midpos = _midposition_vectors(bead_position)
+    midpos = _midposition_vectors(bead_position)  # len(midpos) = len chain - 1
     bonds = _bond_vectors(bead_position)
 
     result = []
@@ -183,8 +185,8 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
                     j1_max_n = j1
                     j2_max_n = j2
         # search after the loop
-        for j1 in range(i2 + 1, len_chain_1 - thr_min_len):
-            for increment in range(len_chain_1 - thr_min_len - j1):
+        for j1 in range(i2 + 1, len_chain - thr_min_len):
+            for increment in range(len_chain - thr_min_len - j1):
                 j2 = j1 + thr_min_len + increment
                 GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
                 if abs(GE_loop) > abs(GE_max_c):
