@@ -33,6 +33,8 @@ def compute_contactmap(
             residues in the protein
     """
     res_list = get_residues(file, model_id, chain_id, to_include, to_ignore)
+    for res in res_list:
+        print(res.get_segid)
     n_residues = len(res_list)
     contact_map = np.zeros((n_residues, n_residues))
 

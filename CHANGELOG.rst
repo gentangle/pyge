@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* adapt native contact map function to address those sequences that presents gaps.
+
 v0.6.0 (2023-03-20)
 ------------------------------------------------------------
 
