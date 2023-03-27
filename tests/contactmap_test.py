@@ -15,11 +15,11 @@ with open(parent / "data/1srl_seqres_cut.csv") as in_file:
     seq = list(reader)[0]
 
 
-def compute_contactmap_test():
+def test_compute_contactmap():
     """Test correctness contact map calculation"""
     expected = np.load(parent / "data/1ucs_cm.npy")
     out = cm.compute_contactmap(
-        parent / "data/1ucs.pdb",
+        str(parent / "data/1ucs.pdb"),
         1,
         "A",
         4.5,
@@ -28,10 +28,10 @@ def compute_contactmap_test():
     assert np.allclose(out, expected, atol=0.0001)
 
 
-def compute_contactmap_sequence_test():
+def test_compute_contactmap_sequence():
     """Test computation of the contact map with sequence."""
     out = cm.compute_contactmap(
-        parent / "data/1srl_w_missing_res.pdb",
+        str(parent / "data/1srl_w_missing_res.pdb"),
         1,
         "A",
         4.5,
