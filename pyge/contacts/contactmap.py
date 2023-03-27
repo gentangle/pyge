@@ -2,6 +2,7 @@
 import numpy as np
 
 from pyge.contacts.pdb_parser import get_residues
+from pyge.contacts.protein_letters import protein_letters_3to1
 
 
 def compute_contactmap(
@@ -49,12 +50,14 @@ def compute_contactmap(
         n_residues = len(sequence)  # this considers missing residues too
         # fill residue list with Nones corresponding to missing residues
         for idx, one_letter_code in enumerate(sequence):
-            if one_letter_code == '-':
+            if one_letter_code == "-":
                 res_list.insert(idx, None)
             else:
-                # TODO: add a check that the sequence is correct
-                # Idea: the user has to provide full info for consistency,
-                # otherwise the program would run also with only gap info
+                # design choice: the sequence provided has to be
+                # consistent with atoms entries.
+                cur_code = protein_letters_3to1[res_list[idx].get_resname()]
+                if not cur_code == one_letter_code:
+                    raise ValueError("Sequence and ATOM entries do not match")
                 continue
         if len(res_list) != len(sequence):
             raise ValueError(
