@@ -14,7 +14,8 @@ with open(parent / "data/1srl_seqres_cut.csv") as in_file:
     reader = csv.reader(in_file)
     seq = list(reader)[0]
 
-def compute_contactmap_sequence_test()
+
+def compute_contactmap_test():
     """Test correctness contact map calculation"""
     expected = np.load(parent / "data/1ucs_cm.npy")
     out = cm.compute_contactmap(
@@ -25,6 +26,7 @@ def compute_contactmap_sequence_test()
         to_ignore=["HOH"]
     )
     assert np.allclose(out, expected, atol=0.0001)
+
 
 def compute_contactmap_sequence_test():
     """Test computation of the contact map with sequence."""
