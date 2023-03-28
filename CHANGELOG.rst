@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* PDB parser now has an option to avoid `HETATM` records
+
 v0.7.0 (2023-03-27)
 ------------------------------------------------------------
 
