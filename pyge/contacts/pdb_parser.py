@@ -26,12 +26,13 @@ def get_residues(
     E.g.
     to_include = ['XLE', 'PYL']
     to_exclude = ['SO4', 'HOH']
+    to_exclude = ['HETATM']
 
     The code specifies every time the parser read a user-included or
     user-excluded residue, specifying its position along the chain.
 
     The parser is the one implemented in the Biopython.PDB module,
-    and it will raise a warning i some atoms are missing. Is up to the
+    and it will raise a warning if some atoms are missing. It is up to the
     user to provide a complete PDB structure.
 
     Parameters
@@ -45,8 +46,12 @@ def get_residues(
         to_include : List[str]
             List with the 3 letter code of residuesID to consider in the parsing apart
             from the proteinogenic ones
-        to_ignore : List[str]
-            As to_include but to ignore the residueId specified
+        to_ignore : List[str], str
+            As to_include but to ignore the residue (3 letter) ID specified
+            If you want to ignore water molecules, you can also provide 'W'.
+            If you want to ignore all HETATM
+            (hence water too),
+            you can also provide 'HETATM'.
 
     Returns
     -------
@@ -57,6 +62,13 @@ def get_residues(
         to_include = []
     if to_ignore is None:
         to_ignore = []
+    if 'W' in to_ignore:
+        to_ignore.append('HOH')
+    if 'HETATM' in to_ignore:
+        ignore_hetatm_flag = True
+        to_ignore.append('HOH')
+    else:
+        ignore_hetatm_flag = False
 
     parser = pdb.PDBParser()
     name_protein = file[-8:-4]  # get unique protein ID of 4 characters
@@ -78,6 +90,9 @@ def get_residues(
 
     res_list = []
     for residue in chain:
+        if ignore_hetatm_flag and residue.get_id()[0].startswith('H_'):
+            continue
+
         # filtering all proteinogenic AA
         if residue.get_resname() in protein_letters_3to1:
             res_list.append(residue)
@@ -108,7 +123,7 @@ def get_residues(
             raise RuntimeError(
                 (
                     f"Residue {residue.get_resname()} with resID {residue.id[1]} "
-                    "is not included in:\n{list(protein_letters_3to1.keys())}"
+                    f"is not included in:\n{list(protein_letters_3to1.keys())}"
                 )
             )
     return res_list
