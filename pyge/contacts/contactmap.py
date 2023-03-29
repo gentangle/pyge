@@ -18,7 +18,7 @@ def compute_contactmap(
     model_id,
     chain_id,
     threshold,
-    altloc="A",
+    altloc=None,
     to_include=None,
     to_ignore=None,
     sequence=None,
@@ -38,8 +38,11 @@ def compute_contactmap(
         See pdb_parser.get_residues for more details
         threshold : float
             Distance below which two non-hydrogen atoms are considered in contact
-        altloc : str
-            Alternative location for disordered atoms. Default: 'A'
+        altloc : str, by default: None
+            Alternative location for disordered atoms. If set to None,
+            the position selected are those with highest occupancy.
+            See: https://biopython.org/wiki/The_Biopython_Structural_Bioinformatics_FAQ
+            Section: Disordered atom positions
         sequence : List[str], optional
             List of 1 letter code of the protein sequence. If provided, the
             contact map will be a square matrix with the same dimensions as
@@ -105,12 +108,12 @@ def compute_contactmap(
                 # Oxygen in ARG that are identified as OH
                 if atom1.get_name().startswith("H"):
                     continue
-                if atom1.is_disordered():
+                if atom1.is_disordered() and altloc is not None:
                     atom1.disordered_select(altloc)
                 for atom2 in res2:
                     if atom2.get_name().startswith("H"):
                         continue
-                    if atom2.is_disordered():
+                    if atom2.is_disordered() and altloc is not None:
                         atom2.disordered_select(altloc)
 
                     # the minus operator between Bio.PDB.Atom.Atom
@@ -120,9 +123,9 @@ def compute_contactmap(
                     if distance < threshold:
                         Ca1 = res1["CA"]
                         Ca2 = res2["CA"]
-                        if Ca1.is_disordered():
+                        if Ca1.is_disordered() and altloc is not None:
                             Ca1.disordered_select(altloc)
-                        if Ca2.is_disordered():
+                        if Ca2.is_disordered() and altloc is not None:
                             Ca2.disordered_select(altloc)
 
                         contact_map[row, col] = Ca2 - Ca1
