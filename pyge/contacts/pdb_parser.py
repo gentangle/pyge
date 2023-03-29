@@ -62,11 +62,11 @@ def get_residues(
         to_include = []
     if to_ignore is None:
         to_ignore = []
-    if 'W' in to_ignore:
-        to_ignore.append('HOH')
-    if 'HETATM' in to_ignore:
+    if "W" in to_ignore:
+        to_ignore.append("HOH")
+    if "HETATM" in to_ignore:
         ignore_hetatm_flag = True
-        to_ignore.append('HOH')
+        to_ignore.append("HOH")
     else:
         ignore_hetatm_flag = False
 
@@ -90,7 +90,16 @@ def get_residues(
 
     res_list = []
     for residue in chain:
-        if ignore_hetatm_flag and residue.get_id()[0].startswith('H_'):
+        if (
+            ignore_hetatm_flag
+            and residue.get_id()[0].startswith("H_")
+            and (residue.get_resname() not in to_ignore)
+        ):
+            # The last condition ensures that if the user specifies a residue,
+            # e.g. a modified residue (MODRES), to be included then this condition
+            # do not throw it away if HETATM is selected to be ignored.
+            # Use case: PDB with ligands and modified residues, the user wants to
+            # ignore ONLY the ligands.
             continue
 
         # filtering all proteinogenic AA
