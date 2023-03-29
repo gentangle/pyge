@@ -163,7 +163,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         to_ignore = None
 
     # default altloc if not modified by the user
-    altloc = "A"
+    altloc = None
     if selection_options is not None:
         if "altloc" in selection_options:
             search = re.search("altloc", selection_options)
