@@ -13,7 +13,8 @@ parent = pathlib.Path(__file__).parent.resolve()
     "to_include, to_ignore, exp_res",
     [
         [None, ["HOH"], 64], [None, ["W"], 64],
-        [None, ["HETATM"], 64], [["HOH"], None, 304]
+        [None, ["HETATM"], 64], [["HOH"], None, 304],
+        [["HOH"], ["HETATM"], 304]
     ]
 )
 def test_get_residues(to_include, to_ignore, exp_res):
