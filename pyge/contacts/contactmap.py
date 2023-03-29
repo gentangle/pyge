@@ -57,7 +57,13 @@ def compute_contactmap(
                 # consistent with atoms entries.
                 cur_code = protein_letters_3to1[res_list[idx].get_resname()]
                 if not cur_code == one_letter_code:
-                    raise ValueError("Sequence and ATOM entries do not match")
+                    raise ValueError(
+                        (
+                            "Sequence and ATOM entries do not match\n"
+                            f"From sequence: {one_letter_code} at idx: {idx}\n"
+                            f"From ATOM: {cur_code}\n"
+                        )
+                    )
                 continue
         if len(res_list) != len(sequence):
             raise ValueError(
