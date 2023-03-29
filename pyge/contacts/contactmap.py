@@ -2,7 +2,15 @@
 import numpy as np
 
 from pyge.contacts.pdb_parser import get_residues
-from pyge.contacts.protein_letters import protein_letters_3to1
+from pyge.contacts.protein_letters import (
+    protein_letters_1to3_extended,
+    protein_letters_3to1,
+)
+
+
+aa_3to1 = {}
+aa_3to1.update(protein_letters_3to1)
+aa_3to1.update(protein_letters_1to3_extended)
 
 
 def compute_contactmap(
@@ -55,7 +63,7 @@ def compute_contactmap(
             else:
                 # design choice: the sequence provided has to be
                 # consistent with atoms entries.
-                cur_code = protein_letters_3to1[res_list[idx].get_resname()]
+                cur_code = aa_3to1[res_list[idx].get_resname()]
                 if not cur_code == one_letter_code:
                     raise ValueError(
                         (
