@@ -61,7 +61,9 @@ def compute_contactmap(
                         (
                             "Sequence and ATOM entries do not match\n"
                             f"From sequence: {one_letter_code} at idx: {idx}\n"
-                            f"From ATOM: {cur_code}\n"
+                            f"From ATOM: {cur_code} "
+                            f"from res (id): {res_list[idx].get_id()}\n"
+                            f"Full res list up to {idx} itaration: {res_list}\n"
                         )
                     )
                 continue
