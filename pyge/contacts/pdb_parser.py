@@ -93,7 +93,7 @@ def get_residues(
         if (
             ignore_hetatm_flag
             and residue.get_id()[0].startswith("H_")
-            and (residue.get_resname() not in to_ignore)
+            and (residue.get_resname() not in to_include)
         ):
             # The last condition ensures that if the user specifies a residue,
             # e.g. a modified residue (MODRES), to be included then this condition
