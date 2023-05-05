@@ -22,6 +22,7 @@ cdef double dot(
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
+@cython.cdivision(True)    # Deactivate Python division
 def cython_gaussian_entanglement(
     Py_ssize_t i1, 
     Py_ssize_t i2, 
@@ -48,6 +49,6 @@ def cython_gaussian_entanglement(
                 dR[k] = R[i][k] - R[j][k]
 
             cross(ddR, deltaR[i], deltaR[j])
-            ge += dot(dR, ddR)/(dot(dR, dR)**(3/2))
+            ge += dot(dR, ddR)/(dot(dR, dR)**(1.5))
 
     return ge/(4*PI)
