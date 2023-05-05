@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* `pyproject.toml` added for pre-build specifications (Cython)
+
 v0.8.2 (2023-03-29)
 ------------------------------------------------------------
 

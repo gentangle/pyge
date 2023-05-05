@@ -27,5 +27,5 @@ def hill_fun(inp, threshold: float, hill_coeff: float) -> np.ndarray:
         out = 1 / (1 + (threshold / inp) ** hill_coeff)
     # check fo NaN
     if np.isnan(np.sum(out)):
-        raise RuntimeError("NaNs are detected as output of the Hill function")
+        raise RuntimeError("NaNs are detected as output of the Hill function!")
     return out
