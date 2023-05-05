@@ -1,0 +1,5 @@
+# For the time being, this file has the purpose to specifies to
+# setuptools that Cython is required to build the package. 
+
+[build-system]
+requires = ["setuptools", "wheel", "Cython"]
