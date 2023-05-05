@@ -70,17 +70,6 @@ setup(
         "mdanalysis",
         "biopython",
     ],
-    # extras_require={
-    #     # eg:
-    #       'rst': ['docutils>=0.11'],
-    #       ':python_version=="2.6"': ['argparse'],
-    #     },
-    # entry_points={
-    #     'console_scripts': [
-    #         'samplecli1= sampleproject.cli_int1:main',
-    #         ]
-    #     },
-    # cmdclass={'build_ext': optional_build_ext},
     ext_modules=cythonize(
         [
             Extension(splitext(relpath(path).replace(os.sep, "."))[0], sources=[path])
