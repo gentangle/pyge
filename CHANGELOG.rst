@@ -2,8 +2,6 @@
 Changelog
 =========
 
-* Introduce the `pyproject.toml` file to specify dependencies before building
-
 v0.8.2 (2023-03-29)
 ------------------------------------------------------------
 
