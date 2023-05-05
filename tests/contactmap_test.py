@@ -16,7 +16,7 @@ with open(parent / "data/1srl_seqres_cut.csv") as in_file:
 
 
 def test_compute_contactmap():
-    """Test correctness contact map calculation"""
+    """Test correctness contact map calculation."""
     expected = np.load(parent / "data/1ucs_cm.npy")
     out = cm.compute_contactmap(
         str(parent / "data/1ucs.pdb"),

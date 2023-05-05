@@ -3,9 +3,9 @@ import numpy as np
 
 from pyge.contacts.pdb_parser import get_residues
 from pyge.contacts.protein_letters import (
-    protein_letters_3to1_extended,
     protein_letters_3to1,
-)
+    protein_letters_3to1_extended,
+    )
 
 
 aa_3to1 = {}
