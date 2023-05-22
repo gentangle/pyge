@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* Cython implementation for the whole cycle over loop when computing GE
+
 v0.8.3 (2023-05-05)
 ------------------------------------------------------------
 

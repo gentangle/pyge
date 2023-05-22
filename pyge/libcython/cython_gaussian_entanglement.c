@@ -1280,18 +1280,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-/* RaiseArgTupleInvalid.proto */
-static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
-    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
-
-/* RaiseDoubleKeywords.proto */
-static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
-
-/* ParseKeywords.proto */
-static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
-    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
-    const char* function_name);
-
 /* MemviewSliceInit.proto */
 #define __Pyx_BUF_MAX_NDIMS %(BUF_MAX_NDIMS)d
 #define __Pyx_MEMVIEW_DIRECT   1
@@ -1317,19 +1305,6 @@ static CYTHON_INLINE int __pyx_sub_acquisition_count_locked(
 #define __PYX_XDEC_MEMVIEW(slice, have_gil) __Pyx_XDEC_MEMVIEW(slice, have_gil, __LINE__)
 static CYTHON_INLINE void __Pyx_INC_MEMVIEW(__Pyx_memviewslice *, int, int);
 static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *, int, int);
-
-/* ArgTypeTest.proto */
-#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
-    ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
-        __Pyx__ArgTypeTest(obj, type, name, exact))
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
-
-/* PyObjectCall.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
-#else
-#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
-#endif
 
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1365,6 +1340,36 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
 #define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
 #define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#endif
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+/* RaiseArgTupleInvalid.proto */
+static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
+    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
+
+/* RaiseDoubleKeywords.proto */
+static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
+
+/* ParseKeywords.proto */
+static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
+    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
+    const char* function_name);
+
+/* ArgTypeTest.proto */
+#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
+    ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
+        __Pyx__ArgTypeTest(obj, type, name, exact))
+static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
+
+/* PyObjectCall.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
 
 /* RaiseException.proto */
@@ -1822,6 +1827,9 @@ static int __Pyx_ValidateAndInit_memviewslice(
                 PyObject *original_obj);
 
 /* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_long(PyObject *, int writable_flag);
+
+/* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_double(PyObject *, int writable_flag);
 
 /* ObjectToMemviewSlice.proto */
@@ -1896,6 +1904,7 @@ static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
 static void __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cross(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice); /*proto*/
 static double __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_dot(__Pyx_memviewslice, __Pyx_memviewslice); /*proto*/
+static double __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(Py_ssize_t, Py_ssize_t, Py_ssize_t, Py_ssize_t, __Pyx_memviewslice, __Pyx_memviewslice); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -1931,6 +1940,7 @@ static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static PyObject *__pyx_format_from_typeinfo(__Pyx_TypeInfo *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_long = { "long", NULL, sizeof(long), { 0 }, 0, IS_UNSIGNED(long) ? 'U' : 'I', IS_UNSIGNED(long), 0 };
 #define __Pyx_MODULE_NAME "pyge.libcython.cython_gaussian_entanglement"
 extern int __pyx_module_is_main_pyge__libcython__cython_gaussian_entanglement;
 int __pyx_module_is_main_pyge__libcython__cython_gaussian_entanglement = 0;
@@ -1945,16 +1955,9 @@ static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
 static const char __pyx_k_O[] = "O";
-static const char __pyx_k_R[] = "R";
 static const char __pyx_k_T[] = "T{";
   static const char __pyx_k_c[] = "c";
-  static const char __pyx_k_i[] = "i";
-  static const char __pyx_k_j[] = "j";
-  static const char __pyx_k_k[] = "k";
   static const char __pyx_k_s[] = "(%s)";
-  static const char __pyx_k_PI[] = "PI";
-  static const char __pyx_k_dR[] = "dR";
-  static const char __pyx_k_ge[] = "ge";
   static const char __pyx_k_i1[] = "i1";
   static const char __pyx_k_i2[] = "i2";
   static const char __pyx_k_id[] = "id";
@@ -1965,11 +1968,10 @@ static const char __pyx_k_T[] = "T{";
   static const char __pyx_k__22[] = ":";
 static const char __pyx_k__23[] = "}";
 static const char __pyx_k__24[] = ",";
-static const char __pyx_k_ddR[] = "ddR";
+static const char __pyx_k_idx[] = "idx";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_base[] = "base";
-static const char __pyx_k_dR_C[] = "dR_C";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_join[] = "join";
 static const char __pyx_k_main[] = "__main__";
@@ -1982,40 +1984,57 @@ static const char __pyx_k_step[] = "step";
 static const char __pyx_k_stop[] = "stop";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_ASCII[] = "ASCII";
+static const char __pyx_k_bonds[] = "bonds";
 static const char __pyx_k_class[] = "__class__";
-static const char __pyx_k_ddR_C[] = "ddR_C";
 static const char __pyx_k_error[] = "error";
 static const char __pyx_k_flags[] = "flags";
+static const char __pyx_k_loops[] = "loops";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_start[] = "start";
-static const char __pyx_k_deltaR[] = "deltaR";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
+static const char __pyx_k_midpos[] = "midpos";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
+static const char __pyx_k_GE_loop[] = "GE_loop";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
+static const char __pyx_k_GE_max_c[] = "GE_max_c";
+static const char __pyx_k_GE_max_n[] = "GE_max_n";
+static const char __pyx_k_ge_c_res[] = "ge_c_res";
+static const char __pyx_k_ge_n_res[] = "ge_n_res";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
+static const char __pyx_k_j1_max_c[] = "j1_max_c";
+static const char __pyx_k_j1_max_n[] = "j1_max_n";
+static const char __pyx_k_j2_max_c[] = "j2_max_c";
+static const char __pyx_k_j2_max_n[] = "j2_max_n";
+static const char __pyx_k_loop_res[] = "loop_res";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_enumerate[] = "enumerate";
+static const char __pyx_k_increment[] = "increment";
+static const char __pyx_k_len_chain[] = "len_chain";
+static const char __pyx_k_len_loops[] = "len_loops";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
+static const char __pyx_k_thr_c_res[] = "thr_c_res";
+static const char __pyx_k_thr_n_res[] = "thr_n_res";
 static const char __pyx_k_IndexError[] = "IndexError";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_pyx_result[] = "__pyx_result";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
+static const char __pyx_k_thr_min_len[] = "thr_min_len";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
@@ -2031,12 +2050,12 @@ static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
+static const char __pyx_k_cython_loops_iteration[] = "cython_loops_iteration";
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
-static const char __pyx_k_cython_gaussian_entanglement[] = "cython_gaussian_entanglement";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -2063,6 +2082,9 @@ static PyObject *__pyx_kp_s_Cannot_create_writable_memory_vi;
 static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
+static PyObject *__pyx_n_s_GE_loop;
+static PyObject *__pyx_n_s_GE_max_c;
+static PyObject *__pyx_n_s_GE_max_n;
 static PyObject *__pyx_kp_s_Incompatible_checksums_0x_x_vs_0;
 static PyObject *__pyx_n_s_IndexError;
 static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
@@ -2073,9 +2095,7 @@ static PyObject *__pyx_kp_s_MemoryView_of_r_at_0x_x;
 static PyObject *__pyx_kp_s_MemoryView_of_r_object;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
-static PyObject *__pyx_n_s_PI;
 static PyObject *__pyx_n_s_PickleError;
-static PyObject *__pyx_n_s_R;
 static PyObject *__pyx_kp_b_T;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
@@ -2088,18 +2108,14 @@ static PyObject *__pyx_kp_b__23;
 static PyObject *__pyx_kp_u__24;
 static PyObject *__pyx_n_s_allocate_buffer;
 static PyObject *__pyx_n_s_base;
+static PyObject *__pyx_n_s_bonds;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
-static PyObject *__pyx_n_s_cython_gaussian_entanglement;
-static PyObject *__pyx_n_s_dR;
-static PyObject *__pyx_n_s_dR_C;
-static PyObject *__pyx_n_s_ddR;
-static PyObject *__pyx_n_s_ddR_C;
-static PyObject *__pyx_n_s_deltaR;
+static PyObject *__pyx_n_s_cython_loops_iteration;
 static PyObject *__pyx_n_s_dict;
 static PyObject *__pyx_n_s_dtype_is_object;
 static PyObject *__pyx_n_s_encode;
@@ -2109,23 +2125,32 @@ static PyObject *__pyx_n_s_flags;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
 static PyObject *__pyx_n_u_fortran;
-static PyObject *__pyx_n_s_ge;
+static PyObject *__pyx_n_s_ge_c_res;
+static PyObject *__pyx_n_s_ge_n_res;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_kp_s_got_differing_extents_in_dimensi;
-static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_i1;
 static PyObject *__pyx_n_s_i2;
 static PyObject *__pyx_n_s_id;
+static PyObject *__pyx_n_s_idx;
 static PyObject *__pyx_n_s_import;
+static PyObject *__pyx_n_s_increment;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
-static PyObject *__pyx_n_s_j;
 static PyObject *__pyx_n_s_j1;
+static PyObject *__pyx_n_s_j1_max_c;
+static PyObject *__pyx_n_s_j1_max_n;
 static PyObject *__pyx_n_s_j2;
+static PyObject *__pyx_n_s_j2_max_c;
+static PyObject *__pyx_n_s_j2_max_n;
 static PyObject *__pyx_n_s_join;
-static PyObject *__pyx_n_s_k;
+static PyObject *__pyx_n_s_len_chain;
+static PyObject *__pyx_n_s_len_loops;
+static PyObject *__pyx_n_s_loop_res;
+static PyObject *__pyx_n_s_loops;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
+static PyObject *__pyx_n_s_midpos;
 static PyObject *__pyx_n_s_mode;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
@@ -2163,11 +2188,14 @@ static PyObject *__pyx_kp_s_strided_and_indirect;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_struct;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_n_s_thr_c_res;
+static PyObject *__pyx_n_s_thr_min_len;
+static PyObject *__pyx_n_s_thr_n_res;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
-static PyObject *__pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(CYTHON_UNUSED PyObject *__pyx_self, Py_ssize_t __pyx_v_i1, Py_ssize_t __pyx_v_i2, Py_ssize_t __pyx_v_j1, Py_ssize_t __pyx_v_j2, __Pyx_memviewslice __pyx_v_R, __Pyx_memviewslice __pyx_v_deltaR); /* proto */
+static PyObject *__pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython_loops_iteration(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_loops, __Pyx_memviewslice __pyx_v_midpos, __Pyx_memviewslice __pyx_v_bonds, Py_ssize_t __pyx_v_thr_min_len, Py_ssize_t __pyx_v_len_chain, __Pyx_memviewslice __pyx_v_loop_res, __Pyx_memviewslice __pyx_v_thr_n_res, __Pyx_memviewslice __pyx_v_ge_n_res, __Pyx_memviewslice __pyx_v_thr_c_res, __Pyx_memviewslice __pyx_v_ge_c_res); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -2373,122 +2401,12 @@ static double __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_dot(__Pyx_
 /* "pyge/libcython/cython_gaussian_entanglement.pyx":26
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)    # Deactivate Python division
- * def cython_gaussian_entanglement(             # <<<<<<<<<<<<<<
+ * cdef double cython_gaussian_entanglement(             # <<<<<<<<<<<<<<
  *     Py_ssize_t i1,
  *     Py_ssize_t i2,
  */
 
-/* Python wrapper */
-static PyObject *__pyx_pw_4pyge_9libcython_28cython_gaussian_entanglement_1cython_gaussian_entanglement(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement[] = "Returns G' for loop starting from residue i1 to i2 and \n    thread starting from residue j1 to j2";
-static PyMethodDef __pyx_mdef_4pyge_9libcython_28cython_gaussian_entanglement_1cython_gaussian_entanglement = {"cython_gaussian_entanglement", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4pyge_9libcython_28cython_gaussian_entanglement_1cython_gaussian_entanglement, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement};
-static PyObject *__pyx_pw_4pyge_9libcython_28cython_gaussian_entanglement_1cython_gaussian_entanglement(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  Py_ssize_t __pyx_v_i1;
-  Py_ssize_t __pyx_v_i2;
-  Py_ssize_t __pyx_v_j1;
-  Py_ssize_t __pyx_v_j2;
-  __Pyx_memviewslice __pyx_v_R = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_deltaR = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("cython_gaussian_entanglement (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_i1,&__pyx_n_s_i2,&__pyx_n_s_j1,&__pyx_n_s_j2,&__pyx_n_s_R,&__pyx_n_s_deltaR,0};
-    PyObject* values[6] = {0,0,0,0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        CYTHON_FALLTHROUGH;
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        CYTHON_FALLTHROUGH;
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_i1)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_i2)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("cython_gaussian_entanglement", 1, 6, 6, 1); __PYX_ERR(0, 26, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_j1)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("cython_gaussian_entanglement", 1, 6, 6, 2); __PYX_ERR(0, 26, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_j2)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("cython_gaussian_entanglement", 1, 6, 6, 3); __PYX_ERR(0, 26, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  4:
-        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("cython_gaussian_entanglement", 1, 6, 6, 4); __PYX_ERR(0, 26, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_deltaR)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("cython_gaussian_entanglement", 1, 6, 6, 5); __PYX_ERR(0, 26, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "cython_gaussian_entanglement") < 0)) __PYX_ERR(0, 26, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-    }
-    __pyx_v_i1 = __Pyx_PyIndex_AsSsize_t(values[0]); if (unlikely((__pyx_v_i1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
-    __pyx_v_i2 = __Pyx_PyIndex_AsSsize_t(values[1]); if (unlikely((__pyx_v_i2 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L3_error)
-    __pyx_v_j1 = __Pyx_PyIndex_AsSsize_t(values[2]); if (unlikely((__pyx_v_j1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L3_error)
-    __pyx_v_j2 = __Pyx_PyIndex_AsSsize_t(values[3]); if (unlikely((__pyx_v_j2 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L3_error)
-    __pyx_v_R = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_R.memview)) __PYX_ERR(0, 31, __pyx_L3_error)
-    __pyx_v_deltaR = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_deltaR.memview)) __PYX_ERR(0, 32, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cython_gaussian_entanglement", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 26, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("pyge.libcython.cython_gaussian_entanglement.cython_gaussian_entanglement", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(__pyx_self, __pyx_v_i1, __pyx_v_i2, __pyx_v_j1, __pyx_v_j2, __pyx_v_R, __pyx_v_deltaR);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(CYTHON_UNUSED PyObject *__pyx_self, Py_ssize_t __pyx_v_i1, Py_ssize_t __pyx_v_i2, Py_ssize_t __pyx_v_j1, Py_ssize_t __pyx_v_j2, __Pyx_memviewslice __pyx_v_R, __Pyx_memviewslice __pyx_v_deltaR) {
+static double __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(Py_ssize_t __pyx_v_i1, Py_ssize_t __pyx_v_i2, Py_ssize_t __pyx_v_j1, Py_ssize_t __pyx_v_j2, __Pyx_memviewslice __pyx_v_R, __Pyx_memviewslice __pyx_v_deltaR) {
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_j;
   Py_ssize_t __pyx_v_k;
@@ -2498,7 +2416,7 @@ static PyObject *__pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython
   __Pyx_memviewslice __pyx_v_dR = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_v_ddR_C[3];
   __Pyx_memviewslice __pyx_v_ddR = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_r = NULL;
+  double __pyx_r;
   __Pyx_RefNannyDeclarations
   struct __pyx_array_obj *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -2689,18 +2607,16 @@ __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cross(__pyx_v_ddR, __pyx
  *             ge += dot(dR, ddR)/(dot(dR, dR)**(1.5))
  * 
  *     return ge/(4*PI)             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)  # Deactivate bounds checking
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyFloat_FromDouble((__pyx_v_ge / (4.0 * __pyx_v_PI))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_r = (__pyx_v_ge / (4.0 * __pyx_v_PI));
   goto __pyx_L0;
 
   /* "pyge/libcython/cython_gaussian_entanglement.pyx":26
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)    # Deactivate Python division
- * def cython_gaussian_entanglement(             # <<<<<<<<<<<<<<
+ * cdef double cython_gaussian_entanglement(             # <<<<<<<<<<<<<<
  *     Py_ssize_t i1,
  *     Py_ssize_t i2,
  */
@@ -2712,13 +2628,588 @@ __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cross(__pyx_v_ddR, __pyx
   __Pyx_XDECREF(__pyx_t_3);
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_17, 1);
-  __Pyx_AddTraceback("pyge.libcython.cython_gaussian_entanglement.cython_gaussian_entanglement", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __Pyx_WriteUnraisable("pyge.libcython.cython_gaussian_entanglement.cython_gaussian_entanglement", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_dR, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_ddR, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_R, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_deltaR, 1);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "pyge/libcython/cython_gaussian_entanglement.pyx":59
+ * @cython.wraparound(False)   # Deactivate negative indexing.
+ * @cython.cdivision(True)    # Deactivate Python division
+ * def cython_loops_iteration(             # <<<<<<<<<<<<<<
+ *     long int[:, :] loops,
+ *     double[:, :] midpos,
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4pyge_9libcython_28cython_gaussian_entanglement_1cython_loops_iteration(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_4pyge_9libcython_28cython_gaussian_entanglement_1cython_loops_iteration = {"cython_loops_iteration", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4pyge_9libcython_28cython_gaussian_entanglement_1cython_loops_iteration, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_4pyge_9libcython_28cython_gaussian_entanglement_1cython_loops_iteration(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  __Pyx_memviewslice __pyx_v_loops = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_midpos = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_bonds = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_v_thr_min_len;
+  Py_ssize_t __pyx_v_len_chain;
+  __Pyx_memviewslice __pyx_v_loop_res = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_thr_n_res = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_ge_n_res = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_thr_c_res = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_ge_c_res = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("cython_loops_iteration (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_loops,&__pyx_n_s_midpos,&__pyx_n_s_bonds,&__pyx_n_s_thr_min_len,&__pyx_n_s_len_chain,&__pyx_n_s_loop_res,&__pyx_n_s_thr_n_res,&__pyx_n_s_ge_n_res,&__pyx_n_s_thr_c_res,&__pyx_n_s_ge_c_res,0};
+    PyObject* values[10] = {0,0,0,0,0,0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        CYTHON_FALLTHROUGH;
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        CYTHON_FALLTHROUGH;
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_loops)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_midpos)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 1); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_bonds)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 2); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_thr_min_len)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 3); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  4:
+        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_len_chain)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 4); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  5:
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_loop_res)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 5); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  6:
+        if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_thr_n_res)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 6); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  7:
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_ge_n_res)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 7); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  8:
+        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_thr_c_res)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 8); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  9:
+        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_ge_c_res)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, 9); __PYX_ERR(0, 59, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "cython_loops_iteration") < 0)) __PYX_ERR(0, 59, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 10) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+      values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+      values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+      values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+      values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+    }
+    __pyx_v_loops = __Pyx_PyObject_to_MemoryviewSlice_dsds_long(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_loops.memview)) __PYX_ERR(0, 60, __pyx_L3_error)
+    __pyx_v_midpos = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_midpos.memview)) __PYX_ERR(0, 61, __pyx_L3_error)
+    __pyx_v_bonds = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_bonds.memview)) __PYX_ERR(0, 62, __pyx_L3_error)
+    __pyx_v_thr_min_len = __Pyx_PyIndex_AsSsize_t(values[3]); if (unlikely((__pyx_v_thr_min_len == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L3_error)
+    __pyx_v_len_chain = __Pyx_PyIndex_AsSsize_t(values[4]); if (unlikely((__pyx_v_len_chain == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
+    __pyx_v_loop_res = __Pyx_PyObject_to_MemoryviewSlice_dsds_long(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_loop_res.memview)) __PYX_ERR(0, 65, __pyx_L3_error)
+    __pyx_v_thr_n_res = __Pyx_PyObject_to_MemoryviewSlice_dsds_long(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_thr_n_res.memview)) __PYX_ERR(0, 66, __pyx_L3_error)
+    __pyx_v_ge_n_res = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_ge_n_res.memview)) __PYX_ERR(0, 67, __pyx_L3_error)
+    __pyx_v_thr_c_res = __Pyx_PyObject_to_MemoryviewSlice_dsds_long(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_thr_c_res.memview)) __PYX_ERR(0, 68, __pyx_L3_error)
+    __pyx_v_ge_c_res = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[9], PyBUF_WRITABLE); if (unlikely(!__pyx_v_ge_c_res.memview)) __PYX_ERR(0, 69, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("cython_loops_iteration", 1, 10, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 59, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("pyge.libcython.cython_gaussian_entanglement.cython_loops_iteration", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython_loops_iteration(__pyx_self, __pyx_v_loops, __pyx_v_midpos, __pyx_v_bonds, __pyx_v_thr_min_len, __pyx_v_len_chain, __pyx_v_loop_res, __pyx_v_thr_n_res, __pyx_v_ge_n_res, __pyx_v_thr_c_res, __pyx_v_ge_c_res);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_4pyge_9libcython_28cython_gaussian_entanglement_cython_loops_iteration(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_loops, __Pyx_memviewslice __pyx_v_midpos, __Pyx_memviewslice __pyx_v_bonds, Py_ssize_t __pyx_v_thr_min_len, Py_ssize_t __pyx_v_len_chain, __Pyx_memviewslice __pyx_v_loop_res, __Pyx_memviewslice __pyx_v_thr_n_res, __Pyx_memviewslice __pyx_v_ge_n_res, __Pyx_memviewslice __pyx_v_thr_c_res, __Pyx_memviewslice __pyx_v_ge_c_res) {
+  double __pyx_v_GE_max_n;
+  double __pyx_v_GE_max_c;
+  double __pyx_v_GE_loop;
+  Py_ssize_t __pyx_v_i1;
+  Py_ssize_t __pyx_v_i2;
+  Py_ssize_t __pyx_v_j1;
+  Py_ssize_t __pyx_v_j2;
+  Py_ssize_t __pyx_v_j1_max_n;
+  Py_ssize_t __pyx_v_j2_max_n;
+  Py_ssize_t __pyx_v_j1_max_c;
+  Py_ssize_t __pyx_v_j2_max_c;
+  Py_ssize_t __pyx_v_increment;
+  Py_ssize_t __pyx_v_idx;
+  Py_ssize_t __pyx_v_len_loops;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  Py_ssize_t __pyx_t_2;
+  Py_ssize_t __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  Py_ssize_t __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  int __pyx_t_12;
+  __Pyx_RefNannySetupContext("cython_loops_iteration", 0);
+
+  /* "pyge/libcython/cython_gaussian_entanglement.pyx":75
+ *     cdef Py_ssize_t i1, i2, j1, j2, j1_max_n, j2_max_n, j1_max_c, j2_max_c, increment, idx
+ * 
+ *     cdef Py_ssize_t len_loops = loops.shape[0]             # <<<<<<<<<<<<<<
+ * 
+ *     for idx in range(len_loops):
+ */
+  __pyx_v_len_loops = (__pyx_v_loops.shape[0]);
+
+  /* "pyge/libcython/cython_gaussian_entanglement.pyx":77
+ *     cdef Py_ssize_t len_loops = loops.shape[0]
+ * 
+ *     for idx in range(len_loops):             # <<<<<<<<<<<<<<
+ *         # loop extrema
+ *         i1 = loops[idx][0]
+ */
+  __pyx_t_1 = __pyx_v_len_loops;
+  __pyx_t_2 = __pyx_t_1;
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v_idx = __pyx_t_3;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":79
+ *     for idx in range(len_loops):
+ *         # loop extrema
+ *         i1 = loops[idx][0]             # <<<<<<<<<<<<<<
+ *         i2 = loops[idx][1]
+ * 
+ */
+    __pyx_t_4 = __pyx_v_idx;
+    __pyx_t_5 = 0;
+    __pyx_v_i1 = (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_loops.data + __pyx_t_4 * __pyx_v_loops.strides[0]) ) + __pyx_t_5 * __pyx_v_loops.strides[1]) )));
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":80
+ *         # loop extrema
+ *         i1 = loops[idx][0]
+ *         i2 = loops[idx][1]             # <<<<<<<<<<<<<<
+ * 
+ *         GE_max_n = 0
+ */
+    __pyx_t_5 = __pyx_v_idx;
+    __pyx_t_4 = 1;
+    __pyx_v_i2 = (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_loops.data + __pyx_t_5 * __pyx_v_loops.strides[0]) ) + __pyx_t_4 * __pyx_v_loops.strides[1]) )));
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":82
+ *         i2 = loops[idx][1]
+ * 
+ *         GE_max_n = 0             # <<<<<<<<<<<<<<
+ *         j1_max_n = 0
+ *         j2_max_n = 0
+ */
+    __pyx_v_GE_max_n = 0.0;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":83
+ * 
+ *         GE_max_n = 0
+ *         j1_max_n = 0             # <<<<<<<<<<<<<<
+ *         j2_max_n = 0
+ *         GE_max_c = 0
+ */
+    __pyx_v_j1_max_n = 0;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":84
+ *         GE_max_n = 0
+ *         j1_max_n = 0
+ *         j2_max_n = 0             # <<<<<<<<<<<<<<
+ *         GE_max_c = 0
+ *         j1_max_c = 0
+ */
+    __pyx_v_j2_max_n = 0;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":85
+ *         j1_max_n = 0
+ *         j2_max_n = 0
+ *         GE_max_c = 0             # <<<<<<<<<<<<<<
+ *         j1_max_c = 0
+ *         j2_max_c = 0
+ */
+    __pyx_v_GE_max_c = 0.0;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":86
+ *         j2_max_n = 0
+ *         GE_max_c = 0
+ *         j1_max_c = 0             # <<<<<<<<<<<<<<
+ *         j2_max_c = 0
+ *         # Search before the loop: N terminus
+ */
+    __pyx_v_j1_max_c = 0;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":87
+ *         GE_max_c = 0
+ *         j1_max_c = 0
+ *         j2_max_c = 0             # <<<<<<<<<<<<<<
+ *         # Search before the loop: N terminus
+ *         for j1 in range(i1 - thr_min_len):
+ */
+    __pyx_v_j2_max_c = 0;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":89
+ *         j2_max_c = 0
+ *         # Search before the loop: N terminus
+ *         for j1 in range(i1 - thr_min_len):             # <<<<<<<<<<<<<<
+ *             for increment in range(i1 - thr_min_len - j1):
+ *                 j2 = j1 + thr_min_len + increment
+ */
+    __pyx_t_6 = (__pyx_v_i1 - __pyx_v_thr_min_len);
+    __pyx_t_7 = __pyx_t_6;
+    for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
+      __pyx_v_j1 = __pyx_t_8;
+
+      /* "pyge/libcython/cython_gaussian_entanglement.pyx":90
+ *         # Search before the loop: N terminus
+ *         for j1 in range(i1 - thr_min_len):
+ *             for increment in range(i1 - thr_min_len - j1):             # <<<<<<<<<<<<<<
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ */
+      __pyx_t_9 = ((__pyx_v_i1 - __pyx_v_thr_min_len) - __pyx_v_j1);
+      __pyx_t_10 = __pyx_t_9;
+      for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
+        __pyx_v_increment = __pyx_t_11;
+
+        /* "pyge/libcython/cython_gaussian_entanglement.pyx":91
+ *         for j1 in range(i1 - thr_min_len):
+ *             for increment in range(i1 - thr_min_len - j1):
+ *                 j2 = j1 + thr_min_len + increment             # <<<<<<<<<<<<<<
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_n):
+ */
+        __pyx_v_j2 = ((__pyx_v_j1 + __pyx_v_thr_min_len) + __pyx_v_increment);
+
+        /* "pyge/libcython/cython_gaussian_entanglement.pyx":92
+ *             for increment in range(i1 - thr_min_len - j1):
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)             # <<<<<<<<<<<<<<
+ *                 if abs(GE_loop) > abs(GE_max_n):
+ *                     GE_max_n = GE_loop
+ */
+        __pyx_v_GE_loop = __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(__pyx_v_i1, __pyx_v_i2, __pyx_v_j1, __pyx_v_j2, __pyx_v_midpos, __pyx_v_bonds);
+
+        /* "pyge/libcython/cython_gaussian_entanglement.pyx":93
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_n):             # <<<<<<<<<<<<<<
+ *                     GE_max_n = GE_loop
+ *                     j1_max_n = j1
+ */
+        __pyx_t_12 = ((fabs(__pyx_v_GE_loop) > fabs(__pyx_v_GE_max_n)) != 0);
+        if (__pyx_t_12) {
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":94
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_n):
+ *                     GE_max_n = GE_loop             # <<<<<<<<<<<<<<
+ *                     j1_max_n = j1
+ *                     j2_max_n = j2
+ */
+          __pyx_v_GE_max_n = __pyx_v_GE_loop;
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":95
+ *                 if abs(GE_loop) > abs(GE_max_n):
+ *                     GE_max_n = GE_loop
+ *                     j1_max_n = j1             # <<<<<<<<<<<<<<
+ *                     j2_max_n = j2
+ *         # search after the loop
+ */
+          __pyx_v_j1_max_n = __pyx_v_j1;
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":96
+ *                     GE_max_n = GE_loop
+ *                     j1_max_n = j1
+ *                     j2_max_n = j2             # <<<<<<<<<<<<<<
+ *         # search after the loop
+ *         for j1 in range(i2 + 1, len_chain - thr_min_len):
+ */
+          __pyx_v_j2_max_n = __pyx_v_j2;
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":93
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_n):             # <<<<<<<<<<<<<<
+ *                     GE_max_n = GE_loop
+ *                     j1_max_n = j1
+ */
+        }
+      }
+    }
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":98
+ *                     j2_max_n = j2
+ *         # search after the loop
+ *         for j1 in range(i2 + 1, len_chain - thr_min_len):             # <<<<<<<<<<<<<<
+ *             for increment in range(len_chain - thr_min_len - j1):
+ *                 j2 = j1 + thr_min_len + increment
+ */
+    __pyx_t_6 = (__pyx_v_len_chain - __pyx_v_thr_min_len);
+    __pyx_t_7 = __pyx_t_6;
+    for (__pyx_t_8 = (__pyx_v_i2 + 1); __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
+      __pyx_v_j1 = __pyx_t_8;
+
+      /* "pyge/libcython/cython_gaussian_entanglement.pyx":99
+ *         # search after the loop
+ *         for j1 in range(i2 + 1, len_chain - thr_min_len):
+ *             for increment in range(len_chain - thr_min_len - j1):             # <<<<<<<<<<<<<<
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ */
+      __pyx_t_9 = ((__pyx_v_len_chain - __pyx_v_thr_min_len) - __pyx_v_j1);
+      __pyx_t_10 = __pyx_t_9;
+      for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
+        __pyx_v_increment = __pyx_t_11;
+
+        /* "pyge/libcython/cython_gaussian_entanglement.pyx":100
+ *         for j1 in range(i2 + 1, len_chain - thr_min_len):
+ *             for increment in range(len_chain - thr_min_len - j1):
+ *                 j2 = j1 + thr_min_len + increment             # <<<<<<<<<<<<<<
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_c):
+ */
+        __pyx_v_j2 = ((__pyx_v_j1 + __pyx_v_thr_min_len) + __pyx_v_increment);
+
+        /* "pyge/libcython/cython_gaussian_entanglement.pyx":101
+ *             for increment in range(len_chain - thr_min_len - j1):
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)             # <<<<<<<<<<<<<<
+ *                 if abs(GE_loop) > abs(GE_max_c):
+ *                     GE_max_c = GE_loop
+ */
+        __pyx_v_GE_loop = __pyx_f_4pyge_9libcython_28cython_gaussian_entanglement_cython_gaussian_entanglement(__pyx_v_i1, __pyx_v_i2, __pyx_v_j1, __pyx_v_j2, __pyx_v_midpos, __pyx_v_bonds);
+
+        /* "pyge/libcython/cython_gaussian_entanglement.pyx":102
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_c):             # <<<<<<<<<<<<<<
+ *                     GE_max_c = GE_loop
+ *                     j1_max_c = j1
+ */
+        __pyx_t_12 = ((fabs(__pyx_v_GE_loop) > fabs(__pyx_v_GE_max_c)) != 0);
+        if (__pyx_t_12) {
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":103
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_c):
+ *                     GE_max_c = GE_loop             # <<<<<<<<<<<<<<
+ *                     j1_max_c = j1
+ *                     j2_max_c = j2
+ */
+          __pyx_v_GE_max_c = __pyx_v_GE_loop;
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":104
+ *                 if abs(GE_loop) > abs(GE_max_c):
+ *                     GE_max_c = GE_loop
+ *                     j1_max_c = j1             # <<<<<<<<<<<<<<
+ *                     j2_max_c = j2
+ *         # loop's GE is the maximum in modulus
+ */
+          __pyx_v_j1_max_c = __pyx_v_j1;
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":105
+ *                     GE_max_c = GE_loop
+ *                     j1_max_c = j1
+ *                     j2_max_c = j2             # <<<<<<<<<<<<<<
+ *         # loop's GE is the maximum in modulus
+ *         loop_res[idx][0] = i1
+ */
+          __pyx_v_j2_max_c = __pyx_v_j2;
+
+          /* "pyge/libcython/cython_gaussian_entanglement.pyx":102
+ *                 j2 = j1 + thr_min_len + increment
+ *                 GE_loop = cython_gaussian_entanglement(i1, i2, j1, j2, midpos, bonds)
+ *                 if abs(GE_loop) > abs(GE_max_c):             # <<<<<<<<<<<<<<
+ *                     GE_max_c = GE_loop
+ *                     j1_max_c = j1
+ */
+        }
+      }
+    }
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":107
+ *                     j2_max_c = j2
+ *         # loop's GE is the maximum in modulus
+ *         loop_res[idx][0] = i1             # <<<<<<<<<<<<<<
+ *         loop_res[idx][1] = i2
+ *         thr_n_res[idx][0] = j1_max_n
+ */
+    __pyx_t_4 = __pyx_v_idx;
+    __pyx_t_5 = 0;
+    *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_loop_res.data + __pyx_t_4 * __pyx_v_loop_res.strides[0]) ) + __pyx_t_5 * __pyx_v_loop_res.strides[1]) )) = __pyx_v_i1;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":108
+ *         # loop's GE is the maximum in modulus
+ *         loop_res[idx][0] = i1
+ *         loop_res[idx][1] = i2             # <<<<<<<<<<<<<<
+ *         thr_n_res[idx][0] = j1_max_n
+ *         thr_n_res[idx][1] = j2_max_n
+ */
+    __pyx_t_5 = __pyx_v_idx;
+    __pyx_t_4 = 1;
+    *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_loop_res.data + __pyx_t_5 * __pyx_v_loop_res.strides[0]) ) + __pyx_t_4 * __pyx_v_loop_res.strides[1]) )) = __pyx_v_i2;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":109
+ *         loop_res[idx][0] = i1
+ *         loop_res[idx][1] = i2
+ *         thr_n_res[idx][0] = j1_max_n             # <<<<<<<<<<<<<<
+ *         thr_n_res[idx][1] = j2_max_n
+ *         ge_n_res[idx] = GE_max_n
+ */
+    __pyx_t_4 = __pyx_v_idx;
+    __pyx_t_5 = 0;
+    *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_thr_n_res.data + __pyx_t_4 * __pyx_v_thr_n_res.strides[0]) ) + __pyx_t_5 * __pyx_v_thr_n_res.strides[1]) )) = __pyx_v_j1_max_n;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":110
+ *         loop_res[idx][1] = i2
+ *         thr_n_res[idx][0] = j1_max_n
+ *         thr_n_res[idx][1] = j2_max_n             # <<<<<<<<<<<<<<
+ *         ge_n_res[idx] = GE_max_n
+ *         thr_c_res[idx][0] = j1_max_c
+ */
+    __pyx_t_5 = __pyx_v_idx;
+    __pyx_t_4 = 1;
+    *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_thr_n_res.data + __pyx_t_5 * __pyx_v_thr_n_res.strides[0]) ) + __pyx_t_4 * __pyx_v_thr_n_res.strides[1]) )) = __pyx_v_j2_max_n;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":111
+ *         thr_n_res[idx][0] = j1_max_n
+ *         thr_n_res[idx][1] = j2_max_n
+ *         ge_n_res[idx] = GE_max_n             # <<<<<<<<<<<<<<
+ *         thr_c_res[idx][0] = j1_max_c
+ *         thr_c_res[idx][1] = j2_max_c
+ */
+    __pyx_t_4 = __pyx_v_idx;
+    *((double *) ( /* dim=0 */ (__pyx_v_ge_n_res.data + __pyx_t_4 * __pyx_v_ge_n_res.strides[0]) )) = __pyx_v_GE_max_n;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":112
+ *         thr_n_res[idx][1] = j2_max_n
+ *         ge_n_res[idx] = GE_max_n
+ *         thr_c_res[idx][0] = j1_max_c             # <<<<<<<<<<<<<<
+ *         thr_c_res[idx][1] = j2_max_c
+ *         ge_c_res[idx] = GE_max_c
+ */
+    __pyx_t_4 = __pyx_v_idx;
+    __pyx_t_5 = 0;
+    *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_thr_c_res.data + __pyx_t_4 * __pyx_v_thr_c_res.strides[0]) ) + __pyx_t_5 * __pyx_v_thr_c_res.strides[1]) )) = __pyx_v_j1_max_c;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":113
+ *         ge_n_res[idx] = GE_max_n
+ *         thr_c_res[idx][0] = j1_max_c
+ *         thr_c_res[idx][1] = j2_max_c             # <<<<<<<<<<<<<<
+ *         ge_c_res[idx] = GE_max_c
+ * 
+ */
+    __pyx_t_5 = __pyx_v_idx;
+    __pyx_t_4 = 1;
+    *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_thr_c_res.data + __pyx_t_5 * __pyx_v_thr_c_res.strides[0]) ) + __pyx_t_4 * __pyx_v_thr_c_res.strides[1]) )) = __pyx_v_j2_max_c;
+
+    /* "pyge/libcython/cython_gaussian_entanglement.pyx":114
+ *         thr_c_res[idx][0] = j1_max_c
+ *         thr_c_res[idx][1] = j2_max_c
+ *         ge_c_res[idx] = GE_max_c             # <<<<<<<<<<<<<<
+ * 
+ */
+    __pyx_t_4 = __pyx_v_idx;
+    *((double *) ( /* dim=0 */ (__pyx_v_ge_c_res.data + __pyx_t_4 * __pyx_v_ge_c_res.strides[0]) )) = __pyx_v_GE_max_c;
+  }
+
+  /* "pyge/libcython/cython_gaussian_entanglement.pyx":59
+ * @cython.wraparound(False)   # Deactivate negative indexing.
+ * @cython.cdivision(True)    # Deactivate Python division
+ * def cython_loops_iteration(             # <<<<<<<<<<<<<<
+ *     long int[:, :] loops,
+ *     double[:, :] midpos,
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_loops, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_midpos, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_bonds, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_loop_res, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_thr_n_res, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_ge_n_res, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_thr_c_res, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_ge_c_res, 1);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -16901,6 +17392,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Cannot_index_with_type_s, __pyx_k_Cannot_index_with_type_s, sizeof(__pyx_k_Cannot_index_with_type_s), 0, 0, 1, 0},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
+  {&__pyx_n_s_GE_loop, __pyx_k_GE_loop, sizeof(__pyx_k_GE_loop), 0, 0, 1, 1},
+  {&__pyx_n_s_GE_max_c, __pyx_k_GE_max_c, sizeof(__pyx_k_GE_max_c), 0, 0, 1, 1},
+  {&__pyx_n_s_GE_max_n, __pyx_k_GE_max_n, sizeof(__pyx_k_GE_max_n), 0, 0, 1, 1},
   {&__pyx_kp_s_Incompatible_checksums_0x_x_vs_0, __pyx_k_Incompatible_checksums_0x_x_vs_0, sizeof(__pyx_k_Incompatible_checksums_0x_x_vs_0), 0, 0, 1, 0},
   {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
   {&__pyx_kp_s_Indirect_dimensions_not_supporte, __pyx_k_Indirect_dimensions_not_supporte, sizeof(__pyx_k_Indirect_dimensions_not_supporte), 0, 0, 1, 0},
@@ -16911,9 +17405,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_MemoryView_of_r_object, __pyx_k_MemoryView_of_r_object, sizeof(__pyx_k_MemoryView_of_r_object), 0, 0, 1, 0},
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
-  {&__pyx_n_s_PI, __pyx_k_PI, sizeof(__pyx_k_PI), 0, 0, 1, 1},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
-  {&__pyx_n_s_R, __pyx_k_R, sizeof(__pyx_k_R), 0, 0, 1, 1},
   {&__pyx_kp_b_T, __pyx_k_T, sizeof(__pyx_k_T), 0, 0, 0, 0},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
@@ -16926,18 +17418,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u__24, __pyx_k__24, sizeof(__pyx_k__24), 0, 1, 0, 0},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
+  {&__pyx_n_s_bonds, __pyx_k_bonds, sizeof(__pyx_k_bonds), 0, 0, 1, 1},
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
-  {&__pyx_n_s_cython_gaussian_entanglement, __pyx_k_cython_gaussian_entanglement, sizeof(__pyx_k_cython_gaussian_entanglement), 0, 0, 1, 1},
-  {&__pyx_n_s_dR, __pyx_k_dR, sizeof(__pyx_k_dR), 0, 0, 1, 1},
-  {&__pyx_n_s_dR_C, __pyx_k_dR_C, sizeof(__pyx_k_dR_C), 0, 0, 1, 1},
-  {&__pyx_n_s_ddR, __pyx_k_ddR, sizeof(__pyx_k_ddR), 0, 0, 1, 1},
-  {&__pyx_n_s_ddR_C, __pyx_k_ddR_C, sizeof(__pyx_k_ddR_C), 0, 0, 1, 1},
-  {&__pyx_n_s_deltaR, __pyx_k_deltaR, sizeof(__pyx_k_deltaR), 0, 0, 1, 1},
+  {&__pyx_n_s_cython_loops_iteration, __pyx_k_cython_loops_iteration, sizeof(__pyx_k_cython_loops_iteration), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
@@ -16947,23 +17435,32 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
   {&__pyx_n_u_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 0, 1},
-  {&__pyx_n_s_ge, __pyx_k_ge, sizeof(__pyx_k_ge), 0, 0, 1, 1},
+  {&__pyx_n_s_ge_c_res, __pyx_k_ge_c_res, sizeof(__pyx_k_ge_c_res), 0, 0, 1, 1},
+  {&__pyx_n_s_ge_n_res, __pyx_k_ge_n_res, sizeof(__pyx_k_ge_n_res), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_kp_s_got_differing_extents_in_dimensi, __pyx_k_got_differing_extents_in_dimensi, sizeof(__pyx_k_got_differing_extents_in_dimensi), 0, 0, 1, 0},
-  {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_i1, __pyx_k_i1, sizeof(__pyx_k_i1), 0, 0, 1, 1},
   {&__pyx_n_s_i2, __pyx_k_i2, sizeof(__pyx_k_i2), 0, 0, 1, 1},
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
+  {&__pyx_n_s_idx, __pyx_k_idx, sizeof(__pyx_k_idx), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
+  {&__pyx_n_s_increment, __pyx_k_increment, sizeof(__pyx_k_increment), 0, 0, 1, 1},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
-  {&__pyx_n_s_j, __pyx_k_j, sizeof(__pyx_k_j), 0, 0, 1, 1},
   {&__pyx_n_s_j1, __pyx_k_j1, sizeof(__pyx_k_j1), 0, 0, 1, 1},
+  {&__pyx_n_s_j1_max_c, __pyx_k_j1_max_c, sizeof(__pyx_k_j1_max_c), 0, 0, 1, 1},
+  {&__pyx_n_s_j1_max_n, __pyx_k_j1_max_n, sizeof(__pyx_k_j1_max_n), 0, 0, 1, 1},
   {&__pyx_n_s_j2, __pyx_k_j2, sizeof(__pyx_k_j2), 0, 0, 1, 1},
+  {&__pyx_n_s_j2_max_c, __pyx_k_j2_max_c, sizeof(__pyx_k_j2_max_c), 0, 0, 1, 1},
+  {&__pyx_n_s_j2_max_n, __pyx_k_j2_max_n, sizeof(__pyx_k_j2_max_n), 0, 0, 1, 1},
   {&__pyx_n_s_join, __pyx_k_join, sizeof(__pyx_k_join), 0, 0, 1, 1},
-  {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
+  {&__pyx_n_s_len_chain, __pyx_k_len_chain, sizeof(__pyx_k_len_chain), 0, 0, 1, 1},
+  {&__pyx_n_s_len_loops, __pyx_k_len_loops, sizeof(__pyx_k_len_loops), 0, 0, 1, 1},
+  {&__pyx_n_s_loop_res, __pyx_k_loop_res, sizeof(__pyx_k_loop_res), 0, 0, 1, 1},
+  {&__pyx_n_s_loops, __pyx_k_loops, sizeof(__pyx_k_loops), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
+  {&__pyx_n_s_midpos, __pyx_k_midpos, sizeof(__pyx_k_midpos), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
@@ -17001,6 +17498,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_struct, __pyx_k_struct, sizeof(__pyx_k_struct), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
+  {&__pyx_n_s_thr_c_res, __pyx_k_thr_c_res, sizeof(__pyx_k_thr_c_res), 0, 0, 1, 1},
+  {&__pyx_n_s_thr_min_len, __pyx_k_thr_min_len, sizeof(__pyx_k_thr_min_len), 0, 0, 1, 1},
+  {&__pyx_n_s_thr_n_res, __pyx_k_thr_n_res, sizeof(__pyx_k_thr_n_res), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
   {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
@@ -17220,17 +17720,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
 
-  /* "pyge/libcython/cython_gaussian_entanglement.pyx":26
+  /* "pyge/libcython/cython_gaussian_entanglement.pyx":59
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)    # Deactivate Python division
- * def cython_gaussian_entanglement(             # <<<<<<<<<<<<<<
- *     Py_ssize_t i1,
- *     Py_ssize_t i2,
+ * def cython_loops_iteration(             # <<<<<<<<<<<<<<
+ *     long int[:, :] loops,
+ *     double[:, :] midpos,
  */
-  __pyx_tuple__25 = PyTuple_Pack(15, __pyx_n_s_i1, __pyx_n_s_i2, __pyx_n_s_j1, __pyx_n_s_j2, __pyx_n_s_R, __pyx_n_s_deltaR, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_k, __pyx_n_s_ge, __pyx_n_s_PI, __pyx_n_s_dR_C, __pyx_n_s_dR, __pyx_n_s_ddR_C, __pyx_n_s_ddR); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(24, __pyx_n_s_loops, __pyx_n_s_midpos, __pyx_n_s_bonds, __pyx_n_s_thr_min_len, __pyx_n_s_len_chain, __pyx_n_s_loop_res, __pyx_n_s_thr_n_res, __pyx_n_s_ge_n_res, __pyx_n_s_thr_c_res, __pyx_n_s_ge_c_res, __pyx_n_s_GE_max_n, __pyx_n_s_GE_max_c, __pyx_n_s_GE_loop, __pyx_n_s_i1, __pyx_n_s_i2, __pyx_n_s_j1, __pyx_n_s_j2, __pyx_n_s_j1_max_n, __pyx_n_s_j2_max_n, __pyx_n_s_j1_max_c, __pyx_n_s_j2_max_c, __pyx_n_s_increment, __pyx_n_s_idx, __pyx_n_s_len_loops); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(6, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyge_libcython_cython_gaussian_e, __pyx_n_s_cython_gaussian_entanglement, 26, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(10, 0, 24, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pyge_libcython_cython_gaussian_e, __pyx_n_s_cython_loops_iteration, 59, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 59, __pyx_L1_error)
 
   /* "View.MemoryView":287
  *         return self.name
@@ -17643,16 +18143,16 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "pyge/libcython/cython_gaussian_entanglement.pyx":26
+  /* "pyge/libcython/cython_gaussian_entanglement.pyx":59
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)    # Deactivate Python division
- * def cython_gaussian_entanglement(             # <<<<<<<<<<<<<<
- *     Py_ssize_t i1,
- *     Py_ssize_t i2,
+ * def cython_loops_iteration(             # <<<<<<<<<<<<<<
+ *     long int[:, :] loops,
+ *     double[:, :] midpos,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4pyge_9libcython_28cython_gaussian_entanglement_1cython_gaussian_entanglement, NULL, __pyx_n_s_pyge_libcython_cython_gaussian_e_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4pyge_9libcython_28cython_gaussian_entanglement_1cython_loops_iteration, NULL, __pyx_n_s_pyge_libcython_cython_gaussian_e_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_cython_gaussian_entanglement, __pyx_t_1) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_cython_loops_iteration, __pyx_t_1) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "pyge/libcython/cython_gaussian_entanglement.pyx":1
@@ -17888,6 +18388,202 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
     return result;
 }
 
+/* MemviewSliceInit */
+static int
+__Pyx_init_memviewslice(struct __pyx_memoryview_obj *memview,
+                        int ndim,
+                        __Pyx_memviewslice *memviewslice,
+                        int memview_is_new_reference)
+{
+    __Pyx_RefNannyDeclarations
+    int i, retval=-1;
+    Py_buffer *buf = &memview->view;
+    __Pyx_RefNannySetupContext("init_memviewslice", 0);
+    if (unlikely(memviewslice->memview || memviewslice->data)) {
+        PyErr_SetString(PyExc_ValueError,
+            "memviewslice is already initialized!");
+        goto fail;
+    }
+    if (buf->strides) {
+        for (i = 0; i < ndim; i++) {
+            memviewslice->strides[i] = buf->strides[i];
+        }
+    } else {
+        Py_ssize_t stride = buf->itemsize;
+        for (i = ndim - 1; i >= 0; i--) {
+            memviewslice->strides[i] = stride;
+            stride *= buf->shape[i];
+        }
+    }
+    for (i = 0; i < ndim; i++) {
+        memviewslice->shape[i]   = buf->shape[i];
+        if (buf->suboffsets) {
+            memviewslice->suboffsets[i] = buf->suboffsets[i];
+        } else {
+            memviewslice->suboffsets[i] = -1;
+        }
+    }
+    memviewslice->memview = memview;
+    memviewslice->data = (char *)buf->buf;
+    if (__pyx_add_acquisition_count(memview) == 0 && !memview_is_new_reference) {
+        Py_INCREF(memview);
+    }
+    retval = 0;
+    goto no_fail;
+fail:
+    memviewslice->memview = 0;
+    memviewslice->data = 0;
+    retval = -1;
+no_fail:
+    __Pyx_RefNannyFinishContext();
+    return retval;
+}
+#ifndef Py_NO_RETURN
+#define Py_NO_RETURN
+#endif
+static void __pyx_fatalerror(const char *fmt, ...) Py_NO_RETURN {
+    va_list vargs;
+    char msg[200];
+#if PY_VERSION_HEX >= 0x030A0000 || defined(HAVE_STDARG_PROTOTYPES)
+    va_start(vargs, fmt);
+#else
+    va_start(vargs);
+#endif
+    vsnprintf(msg, 200, fmt, vargs);
+    va_end(vargs);
+    Py_FatalError(msg);
+}
+static CYTHON_INLINE int
+__pyx_add_acquisition_count_locked(__pyx_atomic_int *acquisition_count,
+                                   PyThread_type_lock lock)
+{
+    int result;
+    PyThread_acquire_lock(lock, 1);
+    result = (*acquisition_count)++;
+    PyThread_release_lock(lock);
+    return result;
+}
+static CYTHON_INLINE int
+__pyx_sub_acquisition_count_locked(__pyx_atomic_int *acquisition_count,
+                                   PyThread_type_lock lock)
+{
+    int result;
+    PyThread_acquire_lock(lock, 1);
+    result = (*acquisition_count)--;
+    PyThread_release_lock(lock);
+    return result;
+}
+static CYTHON_INLINE void
+__Pyx_INC_MEMVIEW(__Pyx_memviewslice *memslice, int have_gil, int lineno)
+{
+    int first_time;
+    struct __pyx_memoryview_obj *memview = memslice->memview;
+    if (unlikely(!memview || (PyObject *) memview == Py_None))
+        return;
+    if (unlikely(__pyx_get_slice_count(memview) < 0))
+        __pyx_fatalerror("Acquisition count is %d (line %d)",
+                         __pyx_get_slice_count(memview), lineno);
+    first_time = __pyx_add_acquisition_count(memview) == 0;
+    if (unlikely(first_time)) {
+        if (have_gil) {
+            Py_INCREF((PyObject *) memview);
+        } else {
+            PyGILState_STATE _gilstate = PyGILState_Ensure();
+            Py_INCREF((PyObject *) memview);
+            PyGILState_Release(_gilstate);
+        }
+    }
+}
+static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *memslice,
+                                             int have_gil, int lineno) {
+    int last_time;
+    struct __pyx_memoryview_obj *memview = memslice->memview;
+    if (unlikely(!memview || (PyObject *) memview == Py_None)) {
+        memslice->memview = NULL;
+        return;
+    }
+    if (unlikely(__pyx_get_slice_count(memview) <= 0))
+        __pyx_fatalerror("Acquisition count is %d (line %d)",
+                         __pyx_get_slice_count(memview), lineno);
+    last_time = __pyx_sub_acquisition_count(memview) == 1;
+    memslice->data = NULL;
+    if (unlikely(last_time)) {
+        if (have_gil) {
+            Py_CLEAR(memslice->memview);
+        } else {
+            PyGILState_STATE _gilstate = PyGILState_Ensure();
+            Py_CLEAR(memslice->memview);
+            PyGILState_Release(_gilstate);
+        }
+    } else {
+        memslice->memview = NULL;
+    }
+}
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+    else state = (PyGILState_STATE)0;
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
 /* RaiseArgTupleInvalid */
 static void __Pyx_RaiseArgtupleInvalid(
     const char* func_name,
@@ -18030,138 +18726,6 @@ bad:
     return -1;
 }
 
-/* MemviewSliceInit */
-static int
-__Pyx_init_memviewslice(struct __pyx_memoryview_obj *memview,
-                        int ndim,
-                        __Pyx_memviewslice *memviewslice,
-                        int memview_is_new_reference)
-{
-    __Pyx_RefNannyDeclarations
-    int i, retval=-1;
-    Py_buffer *buf = &memview->view;
-    __Pyx_RefNannySetupContext("init_memviewslice", 0);
-    if (unlikely(memviewslice->memview || memviewslice->data)) {
-        PyErr_SetString(PyExc_ValueError,
-            "memviewslice is already initialized!");
-        goto fail;
-    }
-    if (buf->strides) {
-        for (i = 0; i < ndim; i++) {
-            memviewslice->strides[i] = buf->strides[i];
-        }
-    } else {
-        Py_ssize_t stride = buf->itemsize;
-        for (i = ndim - 1; i >= 0; i--) {
-            memviewslice->strides[i] = stride;
-            stride *= buf->shape[i];
-        }
-    }
-    for (i = 0; i < ndim; i++) {
-        memviewslice->shape[i]   = buf->shape[i];
-        if (buf->suboffsets) {
-            memviewslice->suboffsets[i] = buf->suboffsets[i];
-        } else {
-            memviewslice->suboffsets[i] = -1;
-        }
-    }
-    memviewslice->memview = memview;
-    memviewslice->data = (char *)buf->buf;
-    if (__pyx_add_acquisition_count(memview) == 0 && !memview_is_new_reference) {
-        Py_INCREF(memview);
-    }
-    retval = 0;
-    goto no_fail;
-fail:
-    memviewslice->memview = 0;
-    memviewslice->data = 0;
-    retval = -1;
-no_fail:
-    __Pyx_RefNannyFinishContext();
-    return retval;
-}
-#ifndef Py_NO_RETURN
-#define Py_NO_RETURN
-#endif
-static void __pyx_fatalerror(const char *fmt, ...) Py_NO_RETURN {
-    va_list vargs;
-    char msg[200];
-#if PY_VERSION_HEX >= 0x030A0000 || defined(HAVE_STDARG_PROTOTYPES)
-    va_start(vargs, fmt);
-#else
-    va_start(vargs);
-#endif
-    vsnprintf(msg, 200, fmt, vargs);
-    va_end(vargs);
-    Py_FatalError(msg);
-}
-static CYTHON_INLINE int
-__pyx_add_acquisition_count_locked(__pyx_atomic_int *acquisition_count,
-                                   PyThread_type_lock lock)
-{
-    int result;
-    PyThread_acquire_lock(lock, 1);
-    result = (*acquisition_count)++;
-    PyThread_release_lock(lock);
-    return result;
-}
-static CYTHON_INLINE int
-__pyx_sub_acquisition_count_locked(__pyx_atomic_int *acquisition_count,
-                                   PyThread_type_lock lock)
-{
-    int result;
-    PyThread_acquire_lock(lock, 1);
-    result = (*acquisition_count)--;
-    PyThread_release_lock(lock);
-    return result;
-}
-static CYTHON_INLINE void
-__Pyx_INC_MEMVIEW(__Pyx_memviewslice *memslice, int have_gil, int lineno)
-{
-    int first_time;
-    struct __pyx_memoryview_obj *memview = memslice->memview;
-    if (unlikely(!memview || (PyObject *) memview == Py_None))
-        return;
-    if (unlikely(__pyx_get_slice_count(memview) < 0))
-        __pyx_fatalerror("Acquisition count is %d (line %d)",
-                         __pyx_get_slice_count(memview), lineno);
-    first_time = __pyx_add_acquisition_count(memview) == 0;
-    if (unlikely(first_time)) {
-        if (have_gil) {
-            Py_INCREF((PyObject *) memview);
-        } else {
-            PyGILState_STATE _gilstate = PyGILState_Ensure();
-            Py_INCREF((PyObject *) memview);
-            PyGILState_Release(_gilstate);
-        }
-    }
-}
-static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *memslice,
-                                             int have_gil, int lineno) {
-    int last_time;
-    struct __pyx_memoryview_obj *memview = memslice->memview;
-    if (unlikely(!memview || (PyObject *) memview == Py_None)) {
-        memslice->memview = NULL;
-        return;
-    }
-    if (unlikely(__pyx_get_slice_count(memview) <= 0))
-        __pyx_fatalerror("Acquisition count is %d (line %d)",
-                         __pyx_get_slice_count(memview), lineno);
-    last_time = __pyx_sub_acquisition_count(memview) == 1;
-    memslice->data = NULL;
-    if (unlikely(last_time)) {
-        if (have_gil) {
-            Py_CLEAR(memslice->memview);
-        } else {
-            PyGILState_STATE _gilstate = PyGILState_Ensure();
-            Py_CLEAR(memslice->memview);
-            PyGILState_Release(_gilstate);
-        }
-    } else {
-        memslice->memview = NULL;
-    }
-}
-
 /* ArgTypeTest */
 static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact)
 {
@@ -18200,30 +18764,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
             "NULL result without error in PyObject_Call");
     }
     return result;
-}
-#endif
-
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
 }
 #endif
 
@@ -20823,6 +21363,29 @@ fail:
 no_fail:
     __Pyx_RefNannyFinishContext();
     return retval;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_long(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS_RO | writable_flag, 2,
+                                                 &__Pyx_TypeInfo_long, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
 /* ObjectToMemviewSlice */

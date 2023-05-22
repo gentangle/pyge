@@ -26,7 +26,7 @@ ca_positions = u_pdb.select_atoms("name CA").positions
 
 def test_gaussian_entanglement():
     """Testing the gaussian entanglement calculation for all possible loops."""
-    ge_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend="cython")
+    ge_computed = gent.ge_loops(cm_1ucs, ca_positions, 10)
 
     for ge_comp, ge_exp in zip(ge_computed, ge_1ucs_native):
         if abs(ge_comp.n_term.value) >= abs(ge_comp.c_term.value):
@@ -38,7 +38,7 @@ def test_gaussian_entanglement():
 
 def test_ge_configuration():
     """Test the possible selections for the GE of the whole configuration."""
-    ge_loops_computed = gent.ge_loops(cm_1ucs, ca_positions, 10, backend="cython")
+    ge_loops_computed = gent.ge_loops(cm_1ucs, ca_positions, 10)
     modes = ("max", "weighted")
 
     for mode in modes:

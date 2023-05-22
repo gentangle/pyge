@@ -12,11 +12,10 @@ import numpy as np
 from numba import njit
 
 from pyge.activation import hill_fun
-from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
+from pyge.libcython.cython_gaussian_entanglement import cython_loops_iteration
 
 
 # Global parameters
-back_allowed = ("numpy", "cython")
 mode_allowed = ("max", "weighted")
 
 
@@ -75,7 +74,8 @@ def gaussian_entanglement(loop0, loop1, thr0, thr1, positions, bonds):
         dR = positions[i] - positions[thr0:thr1]
         ddR = np.cross(bonds[i], bonds[thr0:thr1])
         gauss += np.sum(
-            np.sum((dR * ddR), axis=1) / np.power(np.sum(dR**2, axis=1), 3 / 2)
+            np.sum((dR * ddR), axis=1)
+            / np.power(np.sum(dR**2, axis=1), 3 / 2)
             # dR*ddR shape = (10, 3)
         )
 
@@ -120,7 +120,7 @@ class GETermini:
     c_term: GE
 
 
-def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
+def ge_loops(contact_map, bead_position, thr_min_len):
     """
     Compute G' for all loops, i.e. contacts, in a single polypeptide chain.
 
@@ -136,23 +136,11 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
             Let i and j be indexes for the thread;
             Then this argument set the condition:
                 |j-i| =>  thr_min_len
-        backend : str, default, 'cython'
-            Specifies the backend for the GE calculation.
-            Possible values: 'numpy', 'cython'.
 
     Returns
     -------
         result : List[GETermini]
     """
-    if backend == back_allowed[0]:
-        # Numpy
-        ge_func = gaussian_entanglement
-    elif backend == back_allowed[1]:
-        # Cython
-        ge_func = cython_gaussian_entanglement
-    else:
-        raise ValueError(f"Backend not valid, use one of the following: {back_allowed}")
-
     len_chain = bead_position.shape[0]
     if contact_map.shape[0] != len_chain:
         raise ValueError("Contact map and bead position have different length")
@@ -163,43 +151,38 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
     midpos = _midposition_vectors(bead_position)  # len(midpos) = len chain - 1
     bonds = _bond_vectors(bead_position)
 
-    result = []
-    for loop in loops:
-        # loop extrema
-        i1 = loop[0]
-        i2 = loop[1]
+    loop_res = np.zeros_like(loops)
 
-        GE_max_n = 0
-        j1_max_n = 0
-        j2_max_n = 0
-        GE_max_c = 0
-        j1_max_c = 0
-        j2_max_c = 0
-        # Search before the loop: N terminus
-        for j1 in range(i1 - thr_min_len):
-            for increment in range(i1 - thr_min_len - j1):
-                j2 = j1 + thr_min_len + increment
-                GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
-                if abs(GE_loop) > abs(GE_max_n):
-                    GE_max_n = GE_loop
-                    j1_max_n = j1
-                    j2_max_n = j2
-        # search after the loop
-        for j1 in range(i2 + 1, len_chain - thr_min_len):
-            for increment in range(len_chain - thr_min_len - j1):
-                j2 = j1 + thr_min_len + increment
-                GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
-                if abs(GE_loop) > abs(GE_max_c):
-                    GE_max_c = GE_loop
-                    j1_max_c = j1
-                    j2_max_c = j2
-        # loop's GE is the maximum in modulus
-        result.append(
-            GETermini(
-                n_term=GE(loop=(i1, i2), thread=(j1_max_n, j2_max_n), value=GE_max_n),
-                c_term=GE(loop=(i1, i2), thread=(j1_max_c, j2_max_c), value=GE_max_c),
-            )
+    thr_n_res = np.zeros_like(loops)
+    ge_n_res = np.zeros(len(loops))
+
+    thr_c_res = np.zeros_like(loops)
+    ge_c_res = np.zeros(len(loops))
+
+    cython_loops_iteration(
+        loops,
+        midpos,
+        bonds,
+        thr_min_len,
+        len_chain,
+        loop_res,
+        thr_n_res,
+        ge_n_res,
+        thr_c_res,
+        ge_c_res,
+    )
+
+    result = [
+        GETermini(
+            n_term=GE(loop=(i1, i2), thread=(j1_max_n, j2_max_n), value=GE_max_n),
+            c_term=GE(loop=(i1, i2), thread=(j1_max_c, j2_max_c), value=GE_max_c),
         )
+        for (i1, i2), (j1_max_n, j2_max_n), GE_max_n, (
+            j1_max_c,
+            j2_max_c,
+        ), GE_max_c in zip(loop_res, thr_n_res, ge_n_res, thr_c_res, ge_c_res)
+    ]
+
     return result
 
 
