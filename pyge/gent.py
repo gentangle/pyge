@@ -169,30 +169,50 @@ def ge_loops(contact_map, bead_position, thr_min_len, backend="cython"):
         i1 = loop[0]
         i2 = loop[1]
 
-        GE_max_n = 0
-        j1_max_n = 0
-        j2_max_n = 0
-        GE_max_c = 0
-        j1_max_c = 0
-        j2_max_c = 0
-        # Search before the loop: N terminus
-        for j1 in range(i1 - thr_min_len):
-            for increment in range(i1 - thr_min_len - j1):
-                j2 = j1 + thr_min_len + increment
-                GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
-                if abs(GE_loop) > abs(GE_max_n):
-                    GE_max_n = GE_loop
-                    j1_max_n = j1
-                    j2_max_n = j2
-        # search after the loop
-        for j1 in range(i2 + 1, len_chain - thr_min_len):
-            for increment in range(len_chain - thr_min_len - j1):
-                j2 = j1 + thr_min_len + increment
-                GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
-                if abs(GE_loop) > abs(GE_max_c):
-                    GE_max_c = GE_loop
-                    j1_max_c = j1
-                    j2_max_c = j2
+        # N-thread
+        if i1 - 3 < thr_min_len:
+            GE_max_n = 0
+            j1_max_n = 0
+            j2_max_n = 0
+        else:
+            j1_max_n = 0
+            j2_max_n = i1 - 4
+            GE_max_n = ge_func(i1, i2, j1_max_n, j2_max_n, midpos, bonds)
+        # C-thread
+        if i2 + 3 > len_chain - thr_min_len:
+            GE_max_c = 0
+            j1_max_c = 0
+            j2_max_c = 0
+        else:
+            j1_max_c = i2 + 4
+            j2_max_c = len_chain
+            GE_max_c = ge_func(i1, i2, j1_max_c, j2_max_c, midpos, bonds)
+
+        # GE_max_n = 0
+        # j1_max_n = 0
+        # j2_max_n = 0
+        # GE_max_c = 0
+        # j1_max_c = 0
+        # j2_max_c = 0
+        # # Search before the loop: N terminus
+        # for j1 in range(i1 - thr_min_len):
+        #     for increment in range(i1 - thr_min_len - j1):
+        #         j2 = j1 + thr_min_len + increment
+        #         GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
+        #         if abs(GE_loop) > abs(GE_max_n):
+        #             GE_max_n = GE_loop
+        #             j1_max_n = j1
+        #             j2_max_n = j2
+        # # search after the loop
+        # for j1 in range(i2 + 1, len_chain - thr_min_len):
+        #     for increment in range(len_chain - thr_min_len - j1):
+        #         j2 = j1 + thr_min_len + increment
+        #         GE_loop = ge_func(i1, i2, j1, j2, midpos, bonds)
+        #         if abs(GE_loop) > abs(GE_max_c):
+        #             GE_max_c = GE_loop
+        #             j1_max_c = j1
+        #             j2_max_c = j2
+
         # loop's GE is the maximum in modulus
         result.append(
             GETermini(
