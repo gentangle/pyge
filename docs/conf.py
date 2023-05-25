@@ -53,8 +53,8 @@ version = release = "0.8.3"
 pygments_style = "trac"
 templates_path = ["."]
 extlinks = {
-    "issue": ("https://github.com/loscati/pyge/issues/%s", "#"),  # noqa: E501
-    "pr": ("https://github.com/loscati/pyge/pull/%s", "PR #"),  # noqa: E501
+    "issue": ("https://github.com/gentangle/pyge/issues/%s", "#"),  # noqa: E501
+    "pr": ("https://github.com/gentangle/pyge/pull/%s", "PR #"),  # noqa: E501
 }
 
 # codecov io closes connection if host is accessed too repetitively.
@@ -62,13 +62,13 @@ extlinks = {
 # in the .travis.yml file
 # see https://github.com/codecov/codecov-python/issues/158
 linkcheck_ignore = [
-    r"https://codecov.io/gh/loscati/pyge/*",
+    r"https://codecov.io/gh/gentangle/pyge/*",
 ]
 
 html_theme = "sphinx_py3doc_enhanced_theme"
 html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
 html_theme_options = {
-    "githuburl": "https://github.com/loscati/pyge",
+    "githuburl": "https://github.com/gentangle/pyge",
 }
 
 html_use_smartypants = True

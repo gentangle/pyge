@@ -1,5 +1,5 @@
-AModule
+Pyge
 =======
 
-.. .. automodule:: amodule
+.. .. automodule:: pyge
 ..     :members:
