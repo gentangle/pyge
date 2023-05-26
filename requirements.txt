@@ -1,5 +1,5 @@
-numpy>=1.23
-cython>=0.29
-numba>=0.56
-mdanalysis>=2.3
+numpy>=1.23.0
+cython>=0.29.0
+numba>=0.56.0
+mdanalysis>=2.3.0
 biopython>=1.80
