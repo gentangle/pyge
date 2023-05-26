@@ -64,11 +64,11 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         # https://stackoverflow.com/questions/14399534
-        "cython",
-        "numpy",
-        "numba",
-        "mdanalysis",
-        "biopython",
+        "cython>=0.29",
+        "numpy>=1.23",
+        "numba>=0.56",
+        "mdanalysis>=2.3",
+        "biopython>=1.80",
     ],
     ext_modules=cythonize(
         [

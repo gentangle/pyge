@@ -2,6 +2,9 @@
 Changelog
 =========
 
+* update documetation
+* specify with lower bounds libraries versions
+
 v0.8.4 (2023-05-26)
 ------------------------------------------------------------
 
