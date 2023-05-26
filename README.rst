@@ -26,5 +26,5 @@ Warning: this repo is under construction. This package is ready for production b
 Version
 -------
 
-v0.8.4
+v0.8.5
 
