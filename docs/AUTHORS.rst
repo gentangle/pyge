@@ -1,7 +1,5 @@
 Authors
 =======
 
-* Joao M. C. Teixeira (`webpage`_, `github`_)
-
-.. _webpage: https://bit.ly/joaomcteixeira
-.. _github: https://github.com/joaomcteixeira
+* Leonardo Salicari (`linkedin <https://www.linkedin.com/in/leonardo-salicari/>`_, `github <https://github.com/loscati>`_)
+* Joao M. C. Teixeira (`webpage <https://bit.ly/joaomcteixeira>`_, `github <https://github.com/joaomcteixeira>`_)

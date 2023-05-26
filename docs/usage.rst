@@ -1,9 +1,4 @@
 Usage
 =====
 
-**This is an example page for a real project.** Describe here examples on how
-to use your software!
-
-To use ``sampleproject``::
-
-    import sampleproject
+For now, the API are subject to changes. In the near future, we will provide a documentation and tutorials.

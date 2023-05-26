@@ -1,4 +1,4 @@
-PYGE
+pyge
 ================================
 
 .. .. image:: https://github.com/joaomcteixeira/python-project-skeleton/workflows/ci/badge.svg?branch=main

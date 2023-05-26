@@ -6,11 +6,9 @@ Contents
    :maxdepth: 2
 
    readme
-   the_rationale_behind
-   how_to_use_the_template
-   configuration
    installation
    usage
+   configuration
    contributing
    reference/index
    changelog

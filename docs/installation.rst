@@ -2,11 +2,10 @@
 Installation
 ============
 
-**This is an example page for a real project.** In this page you can describe the installation steps required for end-users, use the :ref:`Contribution page<Contributing>` to provide the guidelines for developers.
+The package will be available on PyPi. As for now, you can install it by cloning the repo using::
+    
+    git clone https://github.com/gentangle/pyge
 
-Installation Example
---------------------
+Navigate inside the folder and run::
 
-At the command line::
-
-    pip install sampleproject
+    python -m pip install .
