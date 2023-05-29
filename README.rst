@@ -1,27 +1,28 @@
 pyge
 ================================
 
-.. .. image:: https://github.com/joaomcteixeira/python-project-skeleton/workflows/ci/badge.svg?branch=main
-..     :target: https://github.com/joaomcteixeira/python-project-skeleton/actions?workflow=ci
-..     :alt: CI
+.. image:: https://github.com/gentangle/pyge/workflows/ci/badge.svg?branch=main
+    :target: https://github.com/gentangle/pyge/actions?workflow=ci
+    :alt: CI
 
-.. .. image:: https://codecov.io/gh/joaomcteixeira/python-project-skeleton/branch/main/graph/badge.svg
-..     :target: https://codecov.io/gh/joaomcteixeira/python-project-skeleton
-..     :alt: Codecov
+.. image:: https://codecov.io/gh/gentangle/pyge/branch/main/graph/badge.svg?token=94KTRCL9EJ 
+    :target: https://codecov.io/gh/gentangle/pyge
+    :alt: Codecov
 
-.. .. image:: https://api.codeclimate.com/v1/badges/d96cc9a1841a819cd4f5/maintainability
-..    :target: https://codeclimate.com/github/joaomcteixeira/python-project-skeleton/maintainability
-..    :alt: Maintainability
+.. image:: https://readthedocs.org/projects/pyge/badge/?version=latest
+    :target: https://pyge.readthedocs.io/en/latest/?badge=latest
+    :alt: Read the Docs
 
-.. .. image:: https://img.shields.io/codeclimate/tech-debt/joaomcteixeira/python-project-skeleton
-..     :target: https://codeclimate.com/github/joaomcteixeira/python-project-skeleton
-..     :alt: Code Climate technical debt
+========================
 
-.. .. image:: https://img.shields.io/readthedocs/python-project-skeleton/latest?label=Read%20the%20Docs
-..     :target: https://python-project-skeleton.readthedocs.io/en/latest/index.html
-..     :alt: Read the Docs
+**Warning: this repo is actively developed, APIs, functions, and documentation might change abruptly**
 
-Warning: this repo is under construction. This package is ready for production but it still lacks documentation, a pypi package and a comprehensive readme. These will be added in the near future. 
+Small python library to compute the Gaussian entanglement (generalization of the linking number) on open and single polymer chain.
+Its purpose is to compute entanglement within single protein chains, starting from a PDB file or a simulation trajectory.
+
+Originally introduce with the work `Entangled Motifs in Membrane Protein Structures <https://doi.org/10.3390/ijms24119193>`_ (2023).
+
+`Documentation <https://pyge.readthedocs.io/en/latest/>`_ introduce on how to install the library and use it. A contribution part is also available for those willing to help improve and shape the project.
 
 Version
 -------
