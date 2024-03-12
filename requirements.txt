@@ -1,5 +1,5 @@
-numpy>=1.21.0
+numpy
 cython
 numba
-mdanalysis>=2.0.0
+mdanalysis
 biopython

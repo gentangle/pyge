@@ -47,10 +47,10 @@ setup(
         "Operating System :: POSIX",
         "Operating System :: MacOS",
         "Operating System :: Microsoft",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
     project_urls={
@@ -61,13 +61,13 @@ setup(
         "Discussion Forum": "https://github.com/loscati/pyge/discussions",
     },
     keywords=["bioinformatics", "topology", "entanglement"],
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     install_requires=[
         # https://stackoverflow.com/questions/14399534
         "cython",
-        "numpy>=1.21.0",
+        "numpy",
         "numba",
-        "mdanalysis>=2.0.0",
+        "mdanalysis",
         "biopython",
     ],
     ext_modules=cythonize(

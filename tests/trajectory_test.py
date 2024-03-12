@@ -1,6 +1,7 @@
 """Test functions for the trajectory module."""
 import json
 import pathlib
+import math
 
 import numpy as np
 
@@ -31,7 +32,7 @@ def test_trajectory():
 
     assert len(ge_ts) == len(ge_1ucs_traj["results"])
     for ge, ge_res in zip(ge_ts, ge_1ucs_traj["results"]):
-        assert ge.value == ge_res[2]
+        assert math.isclose(ge.value, ge_res[2])
         assert ge.loop[0] == ge_res[0][0]
         assert ge.loop[1] == ge_res[0][1]
         assert ge.thread[0] == ge_res[1][0]
