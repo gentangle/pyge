@@ -3,3 +3,4 @@ cython
 numba
 mdanalysis
 biopython
+loguru

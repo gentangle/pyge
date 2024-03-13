@@ -10,13 +10,11 @@ The user is responsible for this matter.
 """
 
 import numpy as np
+from loguru import logger
 
 from pyge import gent
 from pyge.contacts import check_formed
 from pyge.singlechain import _ca_selection_from_topology
-
-# logger = logging.basicConfig(stream=sys.stderr)
-# logger.setLevel(logging.INFO)
 
 
 def trajectory(
@@ -92,9 +90,10 @@ def trajectory(
             "mask must be a list, a numpy array or a dictionary with the keys: start, stop, step"
         )
 
+    logger.info(f"Starting computation of GE for {len(traj_slice):d} frames")
+
     ge_timeseries = []
     for _ in traj_slice:
-        print("Frame: ", universe.trajectory.frame)
         ca_positions = ca_selection.positions
 
         contact_map_config = check_formed.cm_formed(

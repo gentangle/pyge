@@ -9,19 +9,16 @@ the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
 
-import logging
 import re
-import sys
 from dataclasses import dataclass
 from typing import List
 
 import MDAnalysis as mda
+from loguru import logger
 
 from pyge import gent
 from pyge.contacts.contactmap import compute_contactmap
 from pyge.gent import GE, GETermini
-
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 @dataclass
@@ -69,7 +66,7 @@ def _ca_selection_from_topology(
         universe = mda.Universe(str(topology_file))
 
     ca_selection = universe.select_atoms("name CA" + selection_options)
-    logging.debug(f"Number of CA atoms selected: {len(ca_selection)}")
+    logger.info(f"Number of CA atoms selected: {len(ca_selection)}")
 
     return universe, ca_selection
 
@@ -159,9 +156,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
         model_id = cm_options["model_id"]
     else:
         model_id = 1
-        logging.warning(
-            "WARNING: you did not provide the model_id, using the default value (1)"
-        )
+        logger.warning("You did not provide the model_id, using the default value (1)")
     if "chain_id" in cm_options:
         chain_id = cm_options["chain_id"]
     else:
