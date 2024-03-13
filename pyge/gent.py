@@ -5,6 +5,7 @@ through the Gaussian Entanglement as defined in:
 - Baiesi et al. Sci. Rep. (2016)
 - Baiesi et al. Sci. Rep. (2019)
 """
+
 from dataclasses import dataclass
 from typing import List
 
@@ -13,7 +14,6 @@ from numba import njit
 
 from pyge.activation import hill_fun
 from pyge.libcython.cython_gaussian_entanglement import cython_gaussian_entanglement
-
 
 # Global parameters
 back_allowed = ("numpy", "cython")

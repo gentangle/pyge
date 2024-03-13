@@ -1,9 +1,9 @@
 """Decorator to profile time of computation for the core g(aussian)ent(anglement)."""
+
 import cProfile
 import io
 import pstats
 from pathlib import Path
-
 
 parent_dir = Path(__file__).parent.resolve()
 

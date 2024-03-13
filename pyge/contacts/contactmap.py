@@ -1,12 +1,12 @@
 """Compute and draw the interaction matrix, or contact map from a PDB structure."""
+
 import numpy as np
 
 from pyge.contacts.pdb_parser import get_residues
 from pyge.contacts.protein_letters import (
     protein_letters_3to1,
     protein_letters_3to1_extended,
-    )
-
+)
 
 aa_3to1 = {}
 aa_3to1.update(protein_letters_3to1)

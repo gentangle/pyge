@@ -1,4 +1,5 @@
 """Set of activation functions."""
+
 import numpy as np
 
 

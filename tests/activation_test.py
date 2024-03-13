@@ -1,4 +1,5 @@
 """Test function for the activation.py module."""
+
 import pytest
 
 from pyge.activation import hill_fun

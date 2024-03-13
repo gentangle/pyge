@@ -1,4 +1,5 @@
 """Test for the gent module."""
+
 import json
 import logging
 import pathlib
@@ -8,7 +9,6 @@ import MDAnalysis as mda
 import numpy as np
 
 from pyge import gent
-
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 

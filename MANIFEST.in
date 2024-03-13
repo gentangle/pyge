@@ -5,9 +5,9 @@ include *.rst
 include LICENSE
 include requirements.txt
 include CODE_OF_CONDUCT.md
-recursive-include pyge *.html
 recursive-include pyge *.pyx
 
+exclude pyge/libcython/cython_gaussian_entanglement.html
 exclude .appveyor.yml
 exclude .bumpversion.cfg
 exclude .codacy.yaml

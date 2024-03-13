@@ -1,4 +1,5 @@
 """Parser to load residue list from PDB."""
+
 import logging
 import sys
 from typing import List
@@ -6,7 +7,6 @@ from typing import List
 import Bio.PDB as pdb
 
 from pyge.contacts.protein_letters import protein_letters_3to1
-
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 

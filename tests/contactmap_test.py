@@ -1,11 +1,11 @@
 """Test contactmap function."""
+
 import csv
 import pathlib
 
 import numpy as np
 
 import pyge.contacts.contactmap as cm
-
 
 parent = pathlib.Path(__file__).parent.resolve()
 
@@ -19,11 +19,7 @@ def test_compute_contactmap():
     """Test correctness contact map calculation."""
     expected = np.load(parent / "data/1ucs_cm.npy")
     out = cm.compute_contactmap(
-        str(parent / "data/1ucs.pdb"),
-        1,
-        "A",
-        4.5,
-        to_ignore=["HOH"]
+        str(parent / "data/1ucs.pdb"), 1, "A", 4.5, to_ignore=["HOH"]
     )
     assert np.allclose(out, expected, atol=0.0001)
 
