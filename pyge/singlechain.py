@@ -9,19 +9,16 @@ the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
 
-import logging
 import re
-import sys
 from dataclasses import dataclass
 from typing import List
 
 import MDAnalysis as mda
+from loguru import logger
 
 from pyge import gent
 from pyge.contacts.contactmap import compute_contactmap
 from pyge.gent import GE, GETermini
-
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 @dataclass
@@ -31,6 +28,63 @@ class GEChain:
     loops: List[GETermini]
     global_max: GE
     global_weighted: GE
+
+
+def _check_cm_options(cm_options):
+    """
+    Check the consistency of the input options for chain modeling.
+
+    Parameters
+    ----------
+    cm_options : dict
+        A dictionary containing the options for chain modeling.
+
+    Raises
+    ---------
+        ValueError: If the 'chain_id' or 'threshold' keywords are missing.
+    """
+
+    # Setup variables
+    if "model_id" not in cm_options:
+        cm_options["model_id"] = 1
+        logger.warning("You did not provide the model_id, using the default value (1)")
+    if "chain_id" not in cm_options:
+        raise ValueError("You must provide the keyword 'chain_id'")
+    if "threshold" not in cm_options:
+        raise ValueError("You must provide the keyword 'threshold'")
+    if "to_include" not in cm_options:
+        cm_options["to_include"] = None
+    if "to_ignore" not in cm_options:
+        cm_options["to_ignore"] = None
+    if "pdb_for_cm" not in cm_options:
+        cm_options["pdb_for_cm"] = None
+
+
+def _check_altloc(selection_options, cm_options):
+    """Check for altloc consistency and return the selection string.
+
+    See the docstring of the ge_from_pdb function for more details.
+    """
+    # default altloc if not modified by the user
+    altloc = None
+    if selection_options is not None:
+        # Retrive the altloc option from the section_options or
+        # from cm_options
+        if "altloc" in selection_options:
+            search = re.search("altloc", selection_options)
+            altloc = selection_options[search.span()[1] : search.span()[1] + 2].strip(
+                " "
+            )
+            assert len(altloc) == 1
+        elif "altloc" in cm_options:
+            altloc = cm_options["altloc"]
+        selection = selection_options
+    else:
+        selection = ""
+        if "altloc" in cm_options:
+            altloc = cm_options["altloc"]
+
+    return selection, altloc
 
 
 def _ca_selection_from_topology(
@@ -69,7 +123,7 @@ def _ca_selection_from_topology(
         universe = mda.Universe(str(topology_file))
 
     ca_selection = universe.select_atoms("name CA" + selection_options)
-    logging.debug(f"Number of CA atoms selected: {len(ca_selection)}")
+    logger.info(f"Number of CA atoms selected: {len(ca_selection)}")
 
     return universe, ca_selection
 
@@ -154,60 +208,19 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
             global_weighted : GE
                 Same structure as above for the weighted GE of the whole chain
     """
-    # Setup variables
-    if "model_id" in cm_options:
-        model_id = cm_options["model_id"]
-    else:
-        model_id = 1
-        logging.warning(
-            "WARNING: you did not provide the model_id, using the default value (1)"
-        )
-    if "chain_id" in cm_options:
-        chain_id = cm_options["chain_id"]
-    else:
-        raise ValueError("You must provide the keyword 'chain_id'")
-    if "threshold" in cm_options:
-        threshold = cm_options["threshold"]
-    else:
-        raise ValueError("You must provide the keyword 'threshold'")
-    if "to_include" in cm_options:
-        to_include = cm_options["to_include"]
-    else:
-        to_include = None
-    if "to_ignore" in cm_options:
-        to_ignore = cm_options["to_ignore"]
-    else:
-        to_ignore = None
-
-    # default altloc if not modified by the user
-    altloc = None
-    if selection_options is not None:
-        # Retrive the altloc option from the section_options or
-        # from cm_options
-        if "altloc" in selection_options:
-            search = re.search("altloc", selection_options)
-            altloc = selection_options[search.span()[1] : search.span()[1] + 2].strip(
-                " "
-            )
-            assert len(altloc) == 1
-        elif "altloc" in cm_options:
-            altloc = cm_options["altloc"]
-        selection = selection_options
-    else:
-        selection = ""
-        if "altloc" in cm_options:
-            altloc = cm_options["altloc"]
+    _check_cm_options(cm_options)
+    selection, altloc = _check_altloc(selection_options, cm_options)
 
     pdb_file = str(pdb_file)
     _, ca_selection = _ca_selection_from_topology(pdb_file, selection)
     cm = compute_contactmap(
         pdb_file,
-        model_id,
-        chain_id,
-        threshold,
+        cm_options["model_id"],
+        cm_options["chain_id"],
+        cm_options["threshold"],
         altloc=altloc,
-        to_include=to_include,
-        to_ignore=to_ignore,
+        to_include=cm_options["to_include"],
+        to_ignore=cm_options["to_ignore"],
     )
 
     if "thr_min_len" in ge_options:

@@ -70,6 +70,7 @@ setup(
         "numba",
         "mdanalysis",
         "biopython",
+        "loguru",
     ],
     ext_modules=cythonize(
         [

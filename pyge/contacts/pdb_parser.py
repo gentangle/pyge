@@ -1,14 +1,11 @@
 """Parser to load residue list from PDB."""
 
-import logging
-import sys
 from typing import List
 
 import Bio.PDB as pdb
+from loguru import logger
 
 from pyge.contacts.protein_letters import protein_letters_3to1
-
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 def get_residues(
@@ -58,6 +55,7 @@ def get_residues(
         res_list : List[Bio.PDB.Residue.Residue]
             List of residue object
     """
+    file = str(file)
     if to_include is None:
         to_include = []
     if to_ignore is None:
@@ -108,7 +106,7 @@ def get_residues(
 
         elif residue.get_resname() in to_include:
             if debug:
-                logging.debug(
+                logger.info(
                     (
                         f"Residue {residue.get_resname()} with resID {residue.id[1]} "
                         "has been INCLUDED because specified "
@@ -119,7 +117,7 @@ def get_residues(
 
         elif residue.get_resname() in to_ignore:
             if debug:
-                logging.debug(
+                logger.info(
                     (
                         f"Residue {residue.get_resname()} with resID {residue.id[1]} "
                         "has been EXCLUDED because specified "

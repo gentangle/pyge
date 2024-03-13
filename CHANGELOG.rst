@@ -2,6 +2,11 @@
 Changelog
 =========
 
+* Switching from `logging` to `loguru` for logging
+* Faster frame section when using `trajectory`
+* Now `trajectory` can handle more `mask` options to select which frame use to compute GE: a list of frames, a numpy bool with selected frames, a dictionary with `start`, `stop` and `step` keys
+* `trajectory` now is consistent with `singlechain`: both automatically computes the contact map for the given topology 
+
 v0.8.7 (2024-03-13)
 ------------------------------------------------------------
 
