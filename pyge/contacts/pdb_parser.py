@@ -55,6 +55,7 @@ def get_residues(
         res_list : List[Bio.PDB.Residue.Residue]
             List of residue object
     """
+    file = str(file)
     if to_include is None:
         to_include = []
     if to_ignore is None:
