@@ -1,12 +1,12 @@
 """Test functions for the trajectory module."""
+
 import json
-import pathlib
 import math
+import pathlib
 
 import numpy as np
 
 from pyge import trajectory
-
 
 parent = pathlib.Path(__file__).parent.resolve()
 contact_map_native = np.load(parent / "data" / "1ucs_cm.npy")

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """Setup dot py."""
+
 from __future__ import absolute_import, print_function
 
 import os

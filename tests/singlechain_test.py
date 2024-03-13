@@ -1,11 +1,11 @@
 """Test functions for the singlechain module."""
+
 import json
 import pathlib
 
 import numpy as np
 
 from pyge.singlechain import ge_from_pdb
-
 
 parent = pathlib.Path(__file__).parent.resolve()
 with open(

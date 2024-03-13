@@ -8,6 +8,7 @@ These functions do not provide tools to check the completeness and
 the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
+
 import logging
 import sys
 
@@ -15,7 +16,6 @@ import MDAnalysis as mda
 
 from pyge import gent
 from pyge.contacts import check_formed
-
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 

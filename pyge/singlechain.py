@@ -8,6 +8,7 @@ These functions do not provide tools to check the completeness and
 the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
+
 import logging
 import re
 import sys
@@ -19,7 +20,6 @@ import MDAnalysis as mda
 from pyge import gent
 from pyge.contacts.contactmap import compute_contactmap
 from pyge.gent import GE, GETermini
-
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
@@ -167,7 +167,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     if selection_options is not None:
         if "altloc" in selection_options:
             search = re.search("altloc", selection_options)
-            altloc = selection_options[search.span()[1]: search.span()[1] + 2].strip(
+            altloc = selection_options[search.span()[1] : search.span()[1] + 2].strip(
                 " "
             )
             assert len(altloc) == 1
