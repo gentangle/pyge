@@ -48,7 +48,7 @@ project = "pyge"
 year = "2023"
 author = "Leonardo Salicari"
 copyright = "{0}, {1}".format(year, author)
-version = release = "0.8.7"
+version = release = "0.8.8"
 
 pygments_style = "trac"
 templates_path = ["."]

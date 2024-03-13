@@ -2,6 +2,9 @@
 Changelog
 =========
 
+v0.8.8 (2024-03-13)
+------------------------------------------------------------
+
 * Switching from `logging` to `loguru` for logging
 * Faster frame section when using `trajectory`
 * Now `trajectory` can handle more `mask` options to select which frame use to compute GE: a list of frames, a numpy bool with selected frames, a dictionary with `start`, `stop` and `step` keys
