@@ -2,6 +2,9 @@
 Changelog
 =========
 
+v0.8.7 (2024-03-13)
+------------------------------------------------------------
+
 * Doc update: installation section revamped.
 * New minimal dependency requirements
 * Simplified linting dependency: using `ruff` for linting (see `tox.ini`). This is the raccomanded choice to format code too.
