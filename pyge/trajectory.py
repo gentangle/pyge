@@ -9,14 +9,14 @@ the correctness of the structure used for the computations.
 The user is responsible for this matter.
 """
 
-import logging
-import sys
+import numpy as np
 
 from pyge import gent
 from pyge.contacts import check_formed
 from pyge.singlechain import _ca_selection_from_topology
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+# logger = logging.basicConfig(stream=sys.stderr)
+# logger.setLevel(logging.INFO)
 
 
 def trajectory(
@@ -38,9 +38,9 @@ def trajectory(
         path to the topology file
     trajectory_file : str or Path
         path to the trajectory file
-    mask : array_like
-        boolean 1D array with the same dimension of the timeseries used to
-        select which configuration to sample
+    mask : list, np.ndarray or dict
+        mask to select the frames to consider. It can be a list, a numpy array
+        or a dictionary with the keys: start (included), stop (excluded), step
     ge_params : dict
         Dictionary composed as follows:
         - thr_min_len : int
@@ -72,30 +72,48 @@ def trajectory(
         topology_file, selection_options, trajectory_file
     )
 
+    if isinstance(mask, list):
+        # case in which the mask is a list of frame to consider
+        traj_slice = universe.trajectory[mask]
+    elif isinstance(mask, np.ndarray):
+        if mask.dtype == np.bool_:
+            # case in which the mask is a boolean array selecting the frames to consider
+            traj_slice = universe.trajectory[mask]
+        else:
+            raise ValueError("mask must be a boolean array: dtype = np.bool_")
+    elif isinstance(mask, dict):
+        # case in which the mask is a dictionary with teh ranges to use
+        for key in mask:
+            if not isinstance(mask[key], int):
+                raise ValueError("mask values (start, stop, step) must be integers")
+        traj_slice = universe.trajectory[mask["start"] : mask["stop"] : mask["step"]]
+    else:
+        raise ValueError(
+            "mask must be a list, a numpy array or a dictionary with the keys: start, stop, step"
+        )
+
     ge_timeseries = []
-    for idx, _ in enumerate(universe.trajectory):
-        # loop over the iterable Universe.trajectory. This is inherent from
-        # the Reader class which contains ONE SNAPSHOT at a time
-        if mask[idx]:
-            ca_positions = ca_selection.positions
+    for _ in traj_slice:
+        print("Frame: ", universe.trajectory.frame)
+        ca_positions = ca_selection.positions
 
-            contact_map_config = check_formed.cm_formed(
-                contacts_params["contact_map"], ca_positions, contacts_params["gamma"]
+        contact_map_config = check_formed.cm_formed(
+            contacts_params["contact_map"], ca_positions, contacts_params["gamma"]
+        )
+        ge_loops_result = gent.ge_loops(
+            contact_map_config, ca_positions, ge_params["thr_min_len"]
+        )
+
+        if ge_params["whole_config"]:
+            ge_config_result = gent.ge_configuration(
+                ge_loops_result, ge_params["loop_min_len"], ge_params["mode"]
             )
-            ge_loops_result = gent.ge_loops(
-                contact_map_config, ca_positions, ge_params["thr_min_len"]
-            )
 
-            if ge_params["whole_config"]:
-                ge_config_result = gent.ge_configuration(
-                    ge_loops_result, ge_params["loop_min_len"], ge_params["mode"]
-                )
+            # save only the GE for the whole configuration
+            ge_timeseries.append(ge_config_result)
+            continue
 
-                # save only the GE for the whole configuration
-                ge_timeseries.append(ge_config_result)
-                continue
-
-            # save all GE from all loops
-            ge_timeseries.append(ge_loops_result)
+        # save all GE from all loops
+        ge_timeseries.append(ge_loops_result)
 
     return ge_timeseries
