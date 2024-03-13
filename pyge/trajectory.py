@@ -12,23 +12,21 @@ The user is responsible for this matter.
 import logging
 import sys
 
-import MDAnalysis as mda
-
 from pyge import gent
 from pyge.contacts import check_formed
+from pyge.singlechain import _ca_selection_from_topology
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
-def _object_from_trajectory(topology_file, trajectory_file):
-    """Create a MDAnalysis.core.Universe object ot handle the trajectory files."""
-    logging.warning("WARNING: pyge assumes that the trajectory is for a CG chain\n")
-    # In future releases, this function is supposed to handle
-    # AA trajectory and extract only the alpha carbon chain
-    return mda.Universe(str(topology_file), str(trajectory_file))
-
-
-def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params):
+def trajectory(
+    topology_file,
+    trajectory_file,
+    mask,
+    ge_params,
+    contacts_params,
+    selection_options=None,
+):
     """GE for all loops or the whole configurations of single chain trajectory.
 
     The use case is to provide a topology and a trajectory file output of a simulation
@@ -62,6 +60,7 @@ def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params)
             multiplicative factor used to select a contact threshold
             A contact is formed if distance[i,j] <= gamma*contact_map[i,j]
 
+
     Return
     ------
         ge_timeseries : List[GETermini] or List[GE]
@@ -69,16 +68,16 @@ def trajectory(topology_file, trajectory_file, mask, ge_params, contacts_params)
             info about the global GE is saved (List[GE]).
             Otherwise, all info are kept (List[GETermini]).
     """
-    universe = _object_from_trajectory(topology_file, trajectory_file)
+    universe, ca_selection = _ca_selection_from_topology(
+        topology_file, selection_options, trajectory_file
+    )
 
     ge_timeseries = []
     for idx, _ in enumerate(universe.trajectory):
         # loop over the iterable Universe.trajectory. This is inherent from
         # the Reader class which contains ONE SNAPSHOT at a time
         if mask[idx]:
-            # Assume the trajectory is about a CG polymer
-            # No AA information are filtered here
-            ca_positions = universe.trajectory.ts.positions
+            ca_positions = ca_selection.positions
 
             contact_map_config = check_formed.cm_formed(
                 contacts_params["contact_map"], ca_positions, contacts_params["gamma"]

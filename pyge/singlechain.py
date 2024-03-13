@@ -33,13 +33,17 @@ class GEChain:
     global_weighted: GE
 
 
-def _ca_from_topology(topology_file, selection_options):
+def _ca_selection_from_topology(
+    topology_file, selection_options=None, trajectory_file=None
+):
     """CA position vectors from the PDB (topology) file.
 
     Parameters
     ----------
     topology_file : str or Path
         Path to the PDB file
+    trajectory_file : str or Path
+        Path to the trajectory file
     selection_options : str
         String to be used in the selection of atoms. For example, to select
         only the alpha carbon atoms of a specific chain, the string should be
@@ -48,17 +52,26 @@ def _ca_from_topology(topology_file, selection_options):
 
     Returns
     -------
-    out : array_like
-        Array of shape (N, 3) containing the position vectors of the alpha carbon atoms
+    universe : mda.Universe
+        Universe object containing the topology and the coordinates of the PDB file
+
+    ca_selection : mda.AtomGroup
+        AtomGroup object containing the selected alpha carbon atoms
     """
-    if selection_options != "":
+    if selection_options is not None and isinstance(selection_options, str):
         selection_options = " " + selection_options
-    universe = mda.Universe(str(topology_file))
-    ca_positions = universe.select_atoms("name CA" + selection_options).positions
-    # TODO: for now the function prints the number of CAs
-    # with the aim that the user check if the selection is correct
-    logging.debug(f"Number of CA atoms selected: {len(ca_positions)}")
-    return ca_positions
+    else:
+        selection_options = ""
+
+    if trajectory_file is not None:
+        universe = mda.Universe(str(topology_file), str(trajectory_file))
+    else:
+        universe = mda.Universe(str(topology_file))
+
+    ca_selection = universe.select_atoms("name CA" + selection_options)
+    logging.debug(f"Number of CA atoms selected: {len(ca_selection)}")
+
+    return universe, ca_selection
 
 
 def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
@@ -165,6 +178,8 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     # default altloc if not modified by the user
     altloc = None
     if selection_options is not None:
+        # Retrive the altloc option from the section_options or
+        # from cm_options
         if "altloc" in selection_options:
             search = re.search("altloc", selection_options)
             altloc = selection_options[search.span()[1] : search.span()[1] + 2].strip(
@@ -180,7 +195,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
             altloc = cm_options["altloc"]
 
     pdb_file = str(pdb_file)
-    ca_positions = _ca_from_topology(pdb_file, selection)
+    _, ca_selection = _ca_selection_from_topology(pdb_file, selection)
     cm = compute_contactmap(
         pdb_file,
         model_id,
@@ -200,7 +215,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
     else:
         loop_min_len = 0
 
-    ge_loops_result = gent.ge_loops(cm, ca_positions, thr_min_len)
+    ge_loops_result = gent.ge_loops(cm, ca_selection.positions, thr_min_len)
     ge_config_max = gent.ge_configuration(ge_loops_result, loop_min_len, "max")
     ge_config_w = gent.ge_configuration(
         ge_list_complete=ge_loops_result,

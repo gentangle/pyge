@@ -23,7 +23,7 @@ def test_trajectory():
     mask[-1] = 1
 
     ge_ts = trajectory.trajectory(
-        parent / "data" / "1ucs_topo.pdb",
+        parent / "data" / "1ucs_topo_CA.pdb",
         parent / "data" / "1ucs_traj.dcd",
         mask,
         {"thr_min_len": 10, "whole_config": True, "loop_min_len": 10, "mode": "max"},
