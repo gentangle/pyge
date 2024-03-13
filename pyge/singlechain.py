@@ -87,7 +87,7 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
 
     The user control the GE calculation through the ge_options dictionary
     and the contacts calculation through the cm_options dictionary.
-    The `selection_options` is a string that is passed to the PDBParser
+    The `selection_options` is a string that is passed to the MDAnalysis
     to select only certain atoms. Chain and model selection are controlled
     through the cm_options dictionary.
     The `altloc` option can be modified by the user through
@@ -103,6 +103,10 @@ def ge_from_pdb(pdb_file, ge_options, cm_options, selection_options=None):
             }
         selection_options="and altloc A"
     )
+
+    Please note the 'and' in the str for the selection_options argument.
+    This is necessary since it is an additional constrain and the user can control
+    the selection logic.
 
     Parameters
     ----------
