@@ -27,7 +27,7 @@ long_description = "{}\n{}".format(
 
 setup(
     name="pyge",
-    version="0.8.8",
+    version="0.8.9",
     description="Python library to compute the Gaussian Entanglement",
     long_description=long_description,
     long_description_content_type="text/x-rst",

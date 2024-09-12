@@ -27,5 +27,5 @@ Originally introduce with the work `Entangled Motifs in Membrane Protein Structu
 Version
 -------
 
-v0.8.8
+v0.8.9
 
